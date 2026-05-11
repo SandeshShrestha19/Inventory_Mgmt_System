@@ -4,6 +4,7 @@ using ECommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Adapters;
+
 public class OrderAdapter : IOrderRepository
 {
     private readonly AppDbContext _context;
@@ -24,18 +25,19 @@ public class OrderAdapter : IOrderRepository
                       .ThenInclude(oi => oi.Product)
                       .FirstOrDefaultAsync(o => o.Id == id);
 
-    public async Task AddAsync(Order order)
+    public async Task<Order> AddAsync(Order order)
     {
         _context.Orders.Add(order);
-        await _context.SaveChangesAsync();
+        return order;
     }
 
-    public async Task UpdateAsync(Order order)
+    public async Task<Order> UpdateAsync(Order order)
     {
         _context.Orders.Update(order);
         await _context.SaveChangesAsync();
+        return order;
     }
-    public async Task DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
         var order = await _context.Orders.FindAsync(id);
         if (order != null)
@@ -43,5 +45,6 @@ public class OrderAdapter : IOrderRepository
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
         }
+        return true;
     }
 }

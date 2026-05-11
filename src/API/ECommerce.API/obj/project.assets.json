@@ -1584,6 +1584,9 @@
       "ECommerce.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
+        "dependencies": {
+          "HotChocolate.Types": "16.0.0"
+        },
         "compile": {
           "bin/placeholder/ECommerce.Domain.dll": {}
         },

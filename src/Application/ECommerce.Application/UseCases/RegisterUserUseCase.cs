@@ -31,11 +31,8 @@ public class RegisterUserUseCase : IRegisterUserUseCase
         Id = Guid.NewGuid(),
         Name = model.Name,
         Email = model.Email,
+        Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
       };
-      if (!string.IsNullOrWhiteSpace(model.Password))
-      {
-        user.SetPassword(BCrypt.Net.BCrypt.HashPassword(model.Password));
-      }
       return await _userRepository.AddAsync(user);
       
     }

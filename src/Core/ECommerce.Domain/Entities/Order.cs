@@ -5,6 +5,6 @@ public class Order
   public User User { get; set; }
   public Guid UserId { get; set; }
   public decimal TotalPrice { get; set; }
-  public DateTime OrderDate { get; set; }
+  public DateTime OrderDate { get; set; } = DateTime.UtcNow;
   public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }

@@ -3,7 +3,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
 
-namespace ECommerce.Application.UseCases;  
+namespace ECommerce.Application.UseCases;
 
 public class UpdateProductUseCase : IUpdateProductUseCase
 {
@@ -24,7 +24,11 @@ public class UpdateProductUseCase : IUpdateProductUseCase
 
             product.Name = updateModel.Name;
             product.Description = updateModel.Description;
-            product.Price = updateModel.Price;
+            if (updateModel.Price.HasValue)
+            {
+                product.Price = updateModel.Price.Value;
+            }
+
             product.Stock = updateModel.Stock;
 
             return await _productRepository.UpdateAsync(product);
@@ -32,7 +36,7 @@ public class UpdateProductUseCase : IUpdateProductUseCase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to update!");
-            throw;  
+            throw;
         }
     }
 }

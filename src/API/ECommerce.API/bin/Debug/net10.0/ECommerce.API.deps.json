@@ -1130,6 +1130,9 @@
         }
       },
       "ECommerce.Domain/1.0.0": {
+        "dependencies": {
+          "HotChocolate.Types": "16.0.0"
+        },
         "runtime": {
           "ECommerce.Domain.dll": {
             "assemblyVersion": "1.0.0.0",

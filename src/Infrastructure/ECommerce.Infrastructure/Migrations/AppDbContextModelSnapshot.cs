@@ -59,7 +59,7 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal>("UnitPrice")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
@@ -88,7 +88,7 @@ namespace ECommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal?>("Price")
+                    b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("Stock")

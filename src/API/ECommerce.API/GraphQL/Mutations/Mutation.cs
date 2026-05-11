@@ -61,4 +61,26 @@ public class Mutation
             Password = password
         });
     }
+
+    public async Task<Order> PlaceOrder([Service] IPlaceOrderUseCase placeOrderUseCase, Guid userId, List<OrderItemModel> items)
+    {
+        return await placeOrderUseCase.ExecuteAsync(new PlaceOrderModel
+        {
+            UserId = userId,
+            Items = items
+        });
+    }
+
+    public async Task<bool> DeleteOrder([Service] IOrderRepository repo, Guid id)
+    {
+        return await repo.DeleteAsync(id);
+    }
+
+    public async Task<Order> UpdateOrder([Service] IUpdateOrderUseCase updateOrderUseCase, Guid id, List<UpdateOrderItemModel> items)
+    {
+        return await updateOrderUseCase.ExecuteAsync(id, new UpdateOrderModel
+        {
+            Items = items
+        });
+    }
 }

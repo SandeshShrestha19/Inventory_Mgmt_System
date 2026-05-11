@@ -29,6 +29,6 @@ public class Query
     public IQueryable<User> GetUsers([Service] IUserRepository repo) =>
         repo.GetAllAsync();
 
-    public async Task<User?> GetUserById([Service] IUserRepository repo, Guid id) =>
+    public async Task<User> GetUserById([Service] IUserRepository repo, Guid id) =>
         await repo.GetByIdAsync(id);
 }
