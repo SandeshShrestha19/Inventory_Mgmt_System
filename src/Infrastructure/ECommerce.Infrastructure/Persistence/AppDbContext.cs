@@ -1,0 +1,52 @@
+using ECommerce.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace ECommerce.Infrastructure.Persistence;
+
+public class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+    public DbSet<Product> Products { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Product
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.HasKey(p => p.Id);
+            entity.Property(p => p.Price).HasColumnType("decimal(18,2)");
+        });
+
+        // User
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(u => u.Id);
+            entity.HasIndex(u => u.Email).IsUnique();
+        });
+
+        // Order
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.HasKey(o => o.Id);
+            entity.HasOne(o => o.User)
+                  .WithMany(u => u.Orders)
+                  .HasForeignKey(o => o.UserId);
+        });
+
+        // OrderItem
+        modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.HasKey(oi => oi.Id);
+            entity.HasOne(oi => oi.Order)
+                  .WithMany(o => o.OrderItems)
+                  .HasForeignKey(oi => oi.OrderId);
+            entity.HasOne(oi => oi.Product)
+                  .WithMany()
+                  .HasForeignKey(oi => oi.ProductId);
+        });
+    }
+}
