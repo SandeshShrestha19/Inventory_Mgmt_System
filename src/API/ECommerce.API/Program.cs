@@ -6,27 +6,59 @@ using ECommerce.API.GraphQL.Queries;
 using ECommerce.API.GraphQL.Mutations;
 using ECommerce.Application.UseCases;
 using ECommerce.API.GraphQL.Types;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// PostgreSQL + EF Core
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddCors(options =>
+{
+options.AddPolicy("AllowFrontend", policy =>
+    policy.WithOrigins(builder.Configuration["AllowedOrigins"]!.Split(','))
+          .AllowAnyHeader()
+          .AllowAnyMethod()
+          .AllowCredentials());
+});
 
-// Register Adapters
-builder.Services.AddScoped<IProductRepository, ProductAdapter>();
-builder.Services.AddScoped<IOrderRepository, OrderAdapter>();
-builder.Services.AddScoped<IUserRepository, UserAdapter>();
-
-builder.Services.AddScoped<IAddProductUseCase, AddProductUseCase>();
-builder.Services.AddScoped<IUpdateProductUseCase, UpdateProductUseCase>();
-builder.Services.AddScoped<IRegisterUserUseCase, RegisterUserUseCase>();
-builder.Services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
-builder.Services.AddScoped<IPlaceOrderUseCase, PlaceOrderUseCase>();
-builder.Services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
-
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false; //make it true for production when you want https
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = builder.Configuration["JwtConfig:Issuer"], //who created the token
+        ValidAudience = builder.Configuration["JwtConfig:Audience"], //who used the token
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtConfig:Key"]!)), //secret key to verify token
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true, //check if token is expired
+        ValidateIssuerSigningKey = true
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var cookieToken = context.Request.Cookies["token"];
+            if (!string.IsNullOrEmpty(cookieToken))
+            {
+                context.Token = cookieToken;  //read token
+            } // if cookie is empty → automatically falls back to Authorization header
+            return Task.CompletedTask;
+        }
+    };
+});
+builder.Services.AddAuthorization();
+builder.Services.AddInfrastruture();
+builder.Services.AddApplication();
 builder.Services.AddLogging();
 
 builder.Services
@@ -34,14 +66,18 @@ builder.Services
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
     .AddType<UserType>()
+    .AddAuthorization()
+    .AddProjections()
     .AddFiltering()
     .AddSorting()
-    .AddProjections()
+    .AddErrorFilter<AuthorizationErrorFilter>()
     .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true);
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGraphQL();
 

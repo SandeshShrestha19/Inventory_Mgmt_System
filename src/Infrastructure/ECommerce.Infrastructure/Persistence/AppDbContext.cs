@@ -37,6 +37,17 @@ public class AppDbContext : DbContext
                   .HasForeignKey(o => o.UserId);
         });
 
+        modelBuilder.Entity<User>().HasData([
+            new User{
+                Id = new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890"), 
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                Name = "Administrator",
+                Email = "admin123@gmail.com",
+                Role = "Admin",
+                Password = "AQAAAAIAAYagAAAAENWUApdzPmQWudXPT/eH43MRNkXC5P5E3Uq5JF4uSxxuCaf2pXJY5EzEFzUtY+VnYA=="
+            }
+        ]);
+
         // OrderItem
         modelBuilder.Entity<OrderItem>(entity =>
         {

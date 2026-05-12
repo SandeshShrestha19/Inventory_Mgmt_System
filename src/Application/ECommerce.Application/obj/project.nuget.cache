@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "dGy8woy7YfI=",
+  "dgSpecHash": "FzmOwCGFg2A=",
   "success": true,
   "projectFilePath": "C:\\Users\\sande\\Desktop\\.net-vscode\\Practise\\src\\Application\\ECommerce.Application\\ECommerce.Application.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\sande\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\bcrypt.net-next\\4.2.0\\bcrypt.net-next.4.2.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\greendonut\\16.0.0\\greendonut.16.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\greendonut.abstractions\\16.0.0\\greendonut.abstractions.16.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\greendonut.data.primitives\\16.0.0\\greendonut.data.primitives.16.0.0.nupkg.sha512",
@@ -35,13 +35,22 @@
     "C:\\Users\\sande\\.nuget\\packages\\hotchocolate.utilities.dependencyinjection\\16.0.0\\hotchocolate.utilities.dependencyinjection.16.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\hotchocolate.utilities.tasks\\16.0.0\\hotchocolate.utilities.tasks.16.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\hotchocolate.validation\\16.0.0\\hotchocolate.validation.16.0.0.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\10.0.7\\microsoft.aspnetcore.cryptography.internal.10.0.7.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\10.0.7\\microsoft.aspnetcore.cryptography.keyderivation.10.0.7.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.extensions.configuration\\10.0.7\\microsoft.extensions.configuration.10.0.7.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\10.0.7\\microsoft.extensions.configuration.abstractions.10.0.7.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\10.0.7\\microsoft.extensions.dependencyinjection.10.0.7.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.7\\microsoft.extensions.dependencyinjection.abstractions.10.0.7.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.extensions.logging\\10.0.7\\microsoft.extensions.logging.10.0.7.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\10.0.7\\microsoft.extensions.logging.abstractions.10.0.7.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.extensions.objectpool\\10.0.0\\microsoft.extensions.objectpool.10.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.extensions.options\\10.0.7\\microsoft.extensions.options.10.0.7.nupkg.sha512",
-    "C:\\Users\\sande\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.7\\microsoft.extensions.primitives.10.0.7.nupkg.sha512"
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.7\\microsoft.extensions.primitives.10.0.7.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.18.0\\microsoft.identitymodel.abstractions.8.18.0.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.18.0\\microsoft.identitymodel.jsonwebtokens.8.18.0.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.identitymodel.logging\\8.18.0\\microsoft.identitymodel.logging.8.18.0.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.identitymodel.tokens\\8.18.0\\microsoft.identitymodel.tokens.8.18.0.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\system.identitymodel.tokens.jwt\\8.18.0\\system.identitymodel.tokens.jwt.8.18.0.nupkg.sha512"
   ],
   "logs": []
 }

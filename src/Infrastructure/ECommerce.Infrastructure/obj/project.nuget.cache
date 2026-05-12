@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "l9My93GByBg=",
+  "dgSpecHash": "PzWULLq2F1E=",
   "success": true,
   "projectFilePath": "C:\\Users\\sande\\Desktop\\.net-vscode\\Practise\\src\\Infrastructure\\ECommerce.Infrastructure\\ECommerce.Infrastructure.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\sande\\.nuget\\packages\\bcrypt.net-next\\4.2.0\\bcrypt.net-next.4.2.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\greendonut\\16.0.0\\greendonut.16.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\greendonut.abstractions\\16.0.0\\greendonut.abstractions.16.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\greendonut.data.primitives\\16.0.0\\greendonut.data.primitives.16.0.0.nupkg.sha512",

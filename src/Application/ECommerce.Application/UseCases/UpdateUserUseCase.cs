@@ -1,5 +1,3 @@
-using BCrypt.Net;
-using ECommerce.Domain.Models;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
@@ -26,14 +24,24 @@ public class UpdateUserUseCase : IUpdateUserUseCase
                 ?? throw new Exception("User not found!");
 
             if (!string.IsNullOrWhiteSpace(model.Name))
+            {
                 user.Name = model.Name;
+            }
 
             if (!string.IsNullOrWhiteSpace(model.Email))
+            {
                 user.Email = model.Email;
+            }
 
-            // ✅ only hash if password provided
+            if (!string.IsNullOrWhiteSpace(model.Role))
+            {
+                user.Role = model.Role;
+            }
+
             if (!string.IsNullOrWhiteSpace(model.Password))
-                user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            {
+                user.Password = PasswordHashHandler.HashPassword(model.Password);
+            } 
 
             return await _userRepository.UpdateAsync(user);
         }
