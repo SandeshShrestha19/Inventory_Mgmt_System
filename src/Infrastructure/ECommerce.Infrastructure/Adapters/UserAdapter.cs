@@ -45,11 +45,10 @@ public class UserAdapter : IUserRepository
         .FirstOrDefaultAsync(u => u.Id == id);
   }
 
-  public async Task<User> UpdateAsync(User user)
+  public async Task UpdateAsync(User user)
   {
     _dbContext.Users.Update(user);
     await _dbContext.SaveChangesAsync();
-    return user;
   }
 
 }

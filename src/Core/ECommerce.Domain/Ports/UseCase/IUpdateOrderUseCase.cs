@@ -5,5 +5,5 @@ namespace ECommerce.Domain.Ports;
 
 public interface IUpdateOrderUseCase
 {
-    Task<Order> ExecuteAsync(Guid id, UpdateOrderModel model);
+    Task ExecuteAsync(Guid id, UpdateOrderModel model);
 }

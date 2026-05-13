@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "tGsjcbEL/h0=",
+  "dgSpecHash": "ub6vhvY1HeI=",
   "success": true,
   "projectFilePath": "C:\\Users\\sande\\Desktop\\.net-vscode\\Practise\\src\\API\\ECommerce.API\\ECommerce.API.csproj",
   "expectedPackageFiles": [
@@ -66,9 +66,9 @@
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.codeanalysis.csharp.workspaces\\5.0.0\\microsoft.codeanalysis.csharp.workspaces.5.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.codeanalysis.workspaces.common\\5.0.0\\microsoft.codeanalysis.workspaces.common.5.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.codeanalysis.workspaces.msbuild\\5.0.0\\microsoft.codeanalysis.workspaces.msbuild.5.0.0.nupkg.sha512",
-    "C:\\Users\\sande\\.nuget\\packages\\microsoft.entityframeworkcore\\10.0.7\\microsoft.entityframeworkcore.10.0.7.nupkg.sha512",
-    "C:\\Users\\sande\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\10.0.7\\microsoft.entityframeworkcore.abstractions.10.0.7.nupkg.sha512",
-    "C:\\Users\\sande\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\10.0.7\\microsoft.entityframeworkcore.analyzers.10.0.7.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.entityframeworkcore\\10.0.8\\microsoft.entityframeworkcore.10.0.8.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\10.0.8\\microsoft.entityframeworkcore.abstractions.10.0.8.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\10.0.8\\microsoft.entityframeworkcore.analyzers.10.0.8.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.entityframeworkcore.design\\10.0.7\\microsoft.entityframeworkcore.design.10.0.7.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\10.0.7\\microsoft.entityframeworkcore.relational.10.0.7.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.extensions.dependencymodel\\10.0.7\\microsoft.extensions.dependencymodel.10.0.7.nupkg.sha512",

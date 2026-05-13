@@ -26,15 +26,16 @@ public class Mutation
         });
 
     [Authorize(Roles = ["Admin"])]
-    public async Task<Product> UpdateProduct([Service] IUpdateProductUseCase updateUseCase, Guid id, string? name, string? description, decimal? price, int? stock)
+    public async Task<bool> UpdateProduct([Service] IUpdateProductUseCase updateUseCase, Guid id, string? name, string? description, decimal? price, int? stock)
     {
-        return await updateUseCase.ExecuteAsync(id, new UpdateProductModel
+        await updateUseCase.ExecuteAsync(id, new UpdateProductModel
         {
             Name = name,
             Description = description,
             Price = price,
             Stock = stock
         });
+        return true;
     }
 
     [Authorize(Roles = ["Admin", "Mananger"])]
@@ -60,15 +61,16 @@ public class Mutation
     }
 
     [Authorize]
-    public async Task<User> UpdateUser([Service] IUpdateUserUseCase updateUserUseCase, Guid id, string? name, string? email, string? password, string? role)
+    public async Task<bool> UpdateUser([Service] IUpdateUserUseCase updateUserUseCase, Guid id, string? name, string? email, string? password, string? role)
     {
-        return await updateUserUseCase.ExecuteAsync(id, new UpdateUserModel
+        await updateUserUseCase.ExecuteAsync(id, new UpdateUserModel
         {
             Name = name,
             Email = email,
             Role = role,
             Password = password,
         });
+        return true;
     }
 
     [Authorize]
@@ -88,12 +90,13 @@ public class Mutation
 
     [Authorize]
 
-    public async Task<Order> UpdateOrder([Service] IUpdateOrderUseCase updateOrderUseCase, Guid id, List<UpdateOrderItemModel> items)
+    public async Task<bool> UpdateOrder([Service] IUpdateOrderUseCase updateOrderUseCase, Guid id, List<UpdateOrderItemModel> items)
     {
-        return await updateOrderUseCase.ExecuteAsync(id, new UpdateOrderModel
+        await updateOrderUseCase.ExecuteAsync(id, new UpdateOrderModel
         {
             Items = items
         });
+        return true;
     }
 
     [AllowAnonymous]
@@ -103,13 +106,13 @@ public class Mutation
     string email,
     string password)
     {
-        var token = await loginUseCase.ExecuteAsync(new LoginModel
+        var result = await loginUseCase.ExecuteAsync(new LoginModel
         {
             Email = email,
             Password = password
         });
 
-        httpContextAccessor.HttpContext!.Response.Cookies.Append("token", token, new CookieOptions
+        httpContextAccessor.HttpContext!.Response.Cookies.Append("token", result.AccessToken, new CookieOptions
         {
             HttpOnly = true,
             Secure = false,
@@ -117,12 +120,15 @@ public class Mutation
             Expires = DateTimeOffset.UtcNow.AddMinutes(7)
         });
 
-        return new LoginResponseModel
+        httpContextAccessor.HttpContext!.Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
         {
-            Email = email,
-            Message = "Login successful!",
-            ExpiresIn = 7
-        };
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddDays(7) 
+        });
+
+        return result;
     }
 
 
@@ -132,12 +138,31 @@ public class Mutation
     [Service] IHttpContextAccessor httpContextAccessor)
     {
         var userId = httpContextAccessor.HttpContext!.User
-        .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        .FindFirst(ClaimTypes.NameIdentifier)?.Value; //get userId from token
 
-        await logoutUseCase.ExecuteAsync(Guid.Parse(userId!));
+        var refreshToken = httpContextAccessor.HttpContext!.Request.Cookies["refreshToken"] ?? throw new Exception("Refresh token not found!"); //request for refresh token from cookie
+
+        await logoutUseCase.ExecuteAsync(Guid.Parse(userId!), refreshToken);
 
         httpContextAccessor.HttpContext.Response.Cookies.Delete("token");
+        httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
 
         return true;
+    }
+
+    public async Task<string> RefreshToken([Service] IRefreshTokenUseCase refreshTokenUseCase, [Service] IHttpContextAccessor httpContextAccessor, string? refToken = null)
+    {
+        var refreshToken = httpContextAccessor.HttpContext!.Request.Cookies["refreshToken"] ?? refToken ?? throw new Exception("Refresh token not found!");
+
+        var newAccessToken = await refreshTokenUseCase.ExecuteAsync(refreshToken);
+
+        httpContextAccessor.HttpContext!.Response.Cookies.Append("refreshToken", newAccessToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = false,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddMinutes(7)
+        });
+        return newAccessToken;
     }
 }

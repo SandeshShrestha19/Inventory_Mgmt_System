@@ -10,5 +10,6 @@ public class User
     public ICollection<Order> Orders {get; set;} = new List<Order>();
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public string Password { get; set; }
+    public ICollection<RefreshToken> RefreshTokens {get; set;} = new List<RefreshToken>();
     
 }

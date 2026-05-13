@@ -6,6 +6,7 @@ using ECommerce.API.GraphQL.Types;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ECommerce.Applcation.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,6 +58,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddInfrastruture();
 builder.Services.AddApplication();
 builder.Services.AddLogging();
+
+
 
 builder.Services
     .AddGraphQLServer()

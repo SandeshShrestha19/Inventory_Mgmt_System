@@ -16,7 +16,7 @@ public class UpdateProductUseCase : IUpdateProductUseCase
         _logger = logger;
     }
 
-    public async Task<Product> ExecuteAsync(Guid id, UpdateProductModel updateModel)
+    public async Task ExecuteAsync(Guid id, UpdateProductModel updateModel)
     {
         try
         {
@@ -31,7 +31,7 @@ public class UpdateProductUseCase : IUpdateProductUseCase
 
             product.Stock = updateModel.Stock;
 
-            return await _productRepository.UpdateAsync(product);
+            await _productRepository.UpdateAsync(product);
         }
         catch (Exception ex)
         {

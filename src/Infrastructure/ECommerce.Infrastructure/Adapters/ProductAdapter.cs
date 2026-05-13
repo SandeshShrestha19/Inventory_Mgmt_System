@@ -26,11 +26,10 @@ public class ProductAdapter : IProductRepository
         return product;
     }
 
-    public async Task<Product> UpdateAsync(Product product)
+    public async Task UpdateAsync(Product product)
     {
         _context.Products.Update(product);
         await _context.SaveChangesAsync();
-        return product;
     }
 
     public async Task<bool> DeleteAsync(Guid id)

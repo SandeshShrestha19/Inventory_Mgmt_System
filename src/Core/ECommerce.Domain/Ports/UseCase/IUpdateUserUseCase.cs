@@ -5,5 +5,5 @@ namespace ECommerce.Domain.Ports;
 
 public interface IUpdateUserUseCase
 {
-    Task<User> ExecuteAsync(Guid id, UpdateUserModel model);
+    Task ExecuteAsync(Guid id, UpdateUserModel model);
 }

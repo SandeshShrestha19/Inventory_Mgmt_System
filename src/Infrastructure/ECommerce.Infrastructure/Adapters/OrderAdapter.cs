@@ -31,11 +31,10 @@ public class OrderAdapter : IOrderRepository
         return order;
     }
 
-    public async Task<Order> UpdateAsync(Order order)
+    public async Task UpdateAsync(Order order)
     {
         _context.Orders.Update(order);
         await _context.SaveChangesAsync();
-        return order;
     }
     public async Task<bool> DeleteAsync(Guid id)
     {

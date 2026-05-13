@@ -18,7 +18,7 @@ public class UpdateOrderUseCase : IUpdateOrderUseCase
     _productRepository = productRepository;
   }
 
-  public async Task<Order> ExecuteAsync(Guid id, UpdateOrderModel model)
+  public async Task ExecuteAsync(Guid id, UpdateOrderModel model)
   {
     try
     {
@@ -75,7 +75,7 @@ public class UpdateOrderUseCase : IUpdateOrderUseCase
       }
       order.TotalPrice = order.OrderItems.Sum(oi => oi.UnitPrice * oi.Quantity);
 
-      return await _orderRepository.UpdateAsync(order);
+      await _orderRepository.UpdateAsync(order);
     }
     catch (Exception ex)
     {

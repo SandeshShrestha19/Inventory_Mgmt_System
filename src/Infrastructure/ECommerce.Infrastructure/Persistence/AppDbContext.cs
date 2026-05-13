@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Order> Orders { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,6 +27,14 @@ public class AppDbContext : DbContext
         {
             entity.HasKey(u => u.Id);
             entity.HasIndex(u => u.Email).IsUnique();
+        });
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(u => u.Id);
+            entity.HasOne(u => u.User)
+                    .WithMany(u => u.RefreshTokens)
+                    .HasForeignKey(u => u.UserId);
         });
 
         // Order
@@ -61,3 +70,4 @@ public class AppDbContext : DbContext
         });
     }
 }
+

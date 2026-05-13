@@ -16,7 +16,7 @@ public class UpdateUserUseCase : IUpdateUserUseCase
         _logger = logger;
     }
 
-    public async Task<User> ExecuteAsync(Guid id, UpdateUserModel model)
+    public async Task ExecuteAsync(Guid id, UpdateUserModel model)
     {
         try
         {
@@ -43,7 +43,7 @@ public class UpdateUserUseCase : IUpdateUserUseCase
                 user.Password = PasswordHashHandler.HashPassword(model.Password);
             } 
 
-            return await _userRepository.UpdateAsync(user);
+            await _userRepository.UpdateAsync(user);
         }
         catch (Exception ex)
         {

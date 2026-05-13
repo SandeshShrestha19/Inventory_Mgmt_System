@@ -1,3 +1,4 @@
+using ECommerce.Applcation.Helpers;
 using ECommerce.Application.UseCases;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,8 @@ public static class DependencyInjection
     services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
     services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
     services.AddScoped<ILogoutUseCase, LogoutUseCase>();
+    services.AddScoped<IRefreshTokenUseCase, RefreshTokenUseCase>();
+    services.AddScoped<JwtTokenGenerator>();
     return services;
   }
 }
