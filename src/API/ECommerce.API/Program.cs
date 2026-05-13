@@ -1,10 +1,7 @@
 using ECommerce.Infrastructure.Persistence;
-using ECommerce.Domain.Ports;
-using ECommerce.Infrastructure.Adapters;
 using Microsoft.EntityFrameworkCore;
 using ECommerce.API.GraphQL.Queries;
 using ECommerce.API.GraphQL.Mutations;
-using ECommerce.Application.UseCases;
 using ECommerce.API.GraphQL.Types;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;

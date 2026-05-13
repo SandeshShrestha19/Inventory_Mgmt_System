@@ -120,7 +120,7 @@ public class Mutation
         return new LoginResponseModel
         {
             Email = email,
-            AccessToken = token,
+            Message = "Login successful!",
             ExpiresIn = 7
         };
     }

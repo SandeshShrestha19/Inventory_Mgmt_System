@@ -11,7 +11,7 @@ public class UserType : ObjectType<User>
         descriptor.Field(u => u.Name);
         descriptor.Field(u => u.Email);
         descriptor.Field(u => u.Role);
-        descriptor.Field(u => u.IsActive); 
+        descriptor.Field(u => u.IsLoggedIn); 
         descriptor.Field(u => u.CreatedAt);
         descriptor.Field(u => u.Orders);  
     }

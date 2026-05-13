@@ -59,26 +59,25 @@ public class LoginUseCase : ILoginUseCase
       {
         Subject = new ClaimsIdentity(new[] //payload
         {
-          new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-          new Claim(JwtRegisteredClaimNames.Email, model.Email),
+          new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()), // needed for logout
+          new Claim(JwtRegisteredClaimNames.Email, model.Email), //helps to know who is logged in
           new Claim(JwtRegisteredClaimNames.Name, user.Name),  
-          new Claim(ClaimTypes.Role, user.Role) ,       
+          new Claim(ClaimTypes.Role, user.Role) ,  // this makes the role based authorization work     
           new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         }),
         Expires = tokenExpiryTimeStamp,
         Issuer = issuer,
         Audience = audience,
-        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)), SecurityAlgorithms.HmacSha512Signature)
+        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)), SecurityAlgorithms.HmacSha512Signature) //header
       };
 
-      user.IsActive = true;
+      user.IsLoggedIn = true;
       await _userRepository.UpdateAsync(user);
       await _unitOfWork.SaveChangesAsync();
 
       var tokenHandler = new JwtSecurityTokenHandler();
       var securityToken = tokenHandler.CreateToken(tokenDescriptor); 
       return tokenHandler.WriteToken(securityToken);
-
 
     }
     catch (Exception ex)

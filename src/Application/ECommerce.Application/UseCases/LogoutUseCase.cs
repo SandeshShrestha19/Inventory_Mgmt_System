@@ -20,7 +20,7 @@ public class LogoutUseCase: ILogoutUseCase
     {
       var user = await _userRepository.GetByIdAsync(id) ?? throw new Exception("User not found!");
 
-      user.IsActive = false;
+      user.IsLoggedIn = false;
       await _userRepository.UpdateAsync(user);
       await _unitOfWork.SaveChangesAsync();
 
