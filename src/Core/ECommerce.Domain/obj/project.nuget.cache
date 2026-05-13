@@ -1,9 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "3GHJY/YjdeE=",
+  "dgSpecHash": "IkVvNrO93Dw=",
   "success": true,
   "projectFilePath": "C:\\Users\\sande\\Desktop\\.net-vscode\\Practise\\src\\Core\\ECommerce.Domain\\ECommerce.Domain.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\sande\\.nuget\\packages\\fluentvalidation\\11.11.0\\fluentvalidation.11.11.0.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\fluentvalidation.aspnetcore\\11.3.1\\fluentvalidation.aspnetcore.11.3.1.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.11.0\\fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\greendonut\\16.0.0\\greendonut.16.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\greendonut.abstractions\\16.0.0\\greendonut.abstractions.16.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\greendonut.data.primitives\\16.0.0\\greendonut.data.primitives.16.0.0.nupkg.sha512",
