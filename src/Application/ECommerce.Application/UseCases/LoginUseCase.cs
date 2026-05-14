@@ -53,11 +53,6 @@ public class LoginUseCase : ILoginUseCase
 
       user.IsLoggedIn = true;
 
-      // var tokenHandler = new JwtSecurityTokenHandler();
-      // var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-      // var token = tokenHandler.WriteToken(securityToken);
-
-
       var refreshToken = new RefreshToken
       {
         Id = Guid.NewGuid(),
