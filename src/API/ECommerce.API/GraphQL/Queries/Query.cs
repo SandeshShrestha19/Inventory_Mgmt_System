@@ -12,8 +12,8 @@ public class Query
     public IQueryable<Product> GetProducts([Service] IProductRepository repo) =>
         repo.GetAllAsync();
 
-    public async Task<Product?> GetProductById([Service] IProductRepository repo, Guid id) =>
-        await repo.GetByIdAsync(id);  
+    public async Task<ProductResponseModel?> GetProductById([Service] IProductResponseUseCase productResponseUseCase, Guid id) =>
+        await productResponseUseCase.ExecuteAsync(id);  
 
     [UseProjection]
     [UseFiltering]
@@ -23,8 +23,8 @@ public class Query
         repo.GetAllAsync();
 
     [Authorize]
-    public async Task<Order?> GetOrderById([Service] IOrderRepository repo, Guid id) =>
-        await repo.GetByIdAsync(id);
+    public async Task<OrderResponseModel?> GetOrderById([Service] IOrderResponseUseCase orderResponseUseCase, Guid id) =>
+        await orderResponseUseCase.ExecuteAsync(id);
 
     [UseProjection]
     [UseFiltering]
@@ -34,6 +34,6 @@ public class Query
         repo.GetAllAsync();
 
     [Authorize(Roles = ["Admin"])]
-    public async Task<User> GetUserById([Service] IUserRepository repo, Guid id) =>
-        await repo.GetByIdAsync(id);
+    public async Task<UserResponseModel> GetUserById([Service] IUserResponseUseCase userResponseUseCase, Guid id) =>
+        await userResponseUseCase.ExecuteAsync(id);
 }

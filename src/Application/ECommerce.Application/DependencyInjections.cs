@@ -13,6 +13,9 @@ public static class DependencyInjection
     services.AddScoped<IUpdateProductUseCase, UpdateProductUseCase>();
     services.AddScoped<IPlaceOrderUseCase, PlaceOrderUseCase>();
     services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
+    services.AddScoped<IOrderResponseUseCase, OrderResponseUseCase>();
+    services.AddScoped<IProductResponseUseCase, ProductResponseUseCase>();
+    services.AddScoped<IUserResponseUseCase, UserResponseUseCase>();
     services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
     services.AddScoped<ILogoutUseCase, LogoutUseCase>();
     services.AddScoped<IRefreshTokenUseCase, RefreshTokenUseCase>();

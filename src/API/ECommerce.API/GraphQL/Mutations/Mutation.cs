@@ -13,27 +13,24 @@ public class Mutation
     [Authorize(Roles = ["Admin"])]
     public async Task<Product> AddProduct(
         [Service] IAddProductUseCase addUseCase,
-        string name,
-        string description,
-        decimal price,
-        int stock) =>
+        ProductInput productInput) =>
         await addUseCase.ExecuteAsync(new AddProductModel
         {
-            Name = name,
-            Description = description,
-            Price = price,
-            Stock = stock
+            Name = productInput.Name,
+            Description = productInput.Description,
+            Price = productInput.Price,
+            Stock = productInput.Stock
         });
 
     [Authorize(Roles = ["Admin"])]
-    public async Task<bool> UpdateProduct([Service] IUpdateProductUseCase updateUseCase, Guid id, string? name, string? description, decimal? price, int? stock)
+    public async Task<bool> UpdateProduct([Service] IUpdateProductUseCase updateUseCase, Guid id, UpdateProductInput udpateProductInput)
     {
         await updateUseCase.ExecuteAsync(id, new UpdateProductModel
         {
-            Name = name,
-            Description = description,
-            Price = price,
-            Stock = stock
+            Name = udpateProductInput.Name,
+            Description = udpateProductInput.Description,
+            Price = udpateProductInput.Price,
+            Stock = udpateProductInput.Stock
         });
         return true;
     }
@@ -44,14 +41,14 @@ public class Mutation
     Guid id) =>
     await repo.DeleteAsync(id);
 
-    public async Task<User> RegisterUser([Service] IRegisterUserUseCase addUserUseCase, string name, string email, string password, string role)
+    public async Task<User> RegisterUser([Service] IRegisterUserUseCase addUserUseCase, UserInput userInput)
     {
         return await addUserUseCase.ExecuteAsync(new AddUserModel
         {
-            Name = name,
-            Email = email,
-            Role = role,
-            Password = password
+            Name = userInput.Name,
+            Email = userInput.Email,
+            Role = userInput.Role,
+            Password = userInput.Password
         });
     }
     [Authorize]
@@ -61,25 +58,31 @@ public class Mutation
     }
 
     [Authorize]
-    public async Task<bool> UpdateUser([Service] IUpdateUserUseCase updateUserUseCase, Guid id, string? name, string? email, string? password, string? role)
+    public async Task<bool> UpdateUser([Service] IUpdateUserUseCase updateUserUseCase, Guid id, UpdateUserInput updateUserInput)
     {
         await updateUserUseCase.ExecuteAsync(id, new UpdateUserModel
         {
-            Name = name,
-            Email = email,
-            Role = role,
-            Password = password,
+            Name = updateUserInput.Name,
+            Email = updateUserInput.Email,
+            Role = updateUserInput.Role,
+            Password = updateUserInput.Password
         });
         return true;
     }
 
     [Authorize]
-    public async Task<Order> PlaceOrder([Service] IPlaceOrderUseCase placeOrderUseCase, Guid userId, List<OrderItemModel> items)
+    public async Task<Order> PlaceOrder(
+    [Service] IPlaceOrderUseCase placeOrderUseCase,
+    OrderInput orderInput)
     {
         return await placeOrderUseCase.ExecuteAsync(new PlaceOrderModel
         {
-            UserId = userId,
-            Items = items
+            UserId = orderInput.UserId,
+            Items = orderInput.Items.Select(item => new OrderItemModel
+            {
+                ProductId = item.ProductId,
+                Quantity = item.Quantity
+            }).ToList()
         });
     }
 
@@ -90,11 +93,18 @@ public class Mutation
 
     [Authorize]
 
-    public async Task<bool> UpdateOrder([Service] IUpdateOrderUseCase updateOrderUseCase, Guid id, List<UpdateOrderItemModel> items)
+    public async Task<bool> UpdateOrder(
+    [Service] IUpdateOrderUseCase updateOrderUseCase,
+    Guid id,
+    UpdateOrderInput updateOrderInput)
     {
         await updateOrderUseCase.ExecuteAsync(id, new UpdateOrderModel
         {
-            Items = items
+            Items = updateOrderInput.Items.Select(item => new UpdateOrderItemModel
+            {
+                ProductId = item.ProductId,  
+                Quantity = item.Quantity
+            }).ToList() 
         });
         return true;
     }
@@ -116,7 +126,7 @@ public class Mutation
         {
             HttpOnly = true,
             Secure = false,
-            SameSite = SameSiteMode.Strict, 
+            SameSite = SameSiteMode.Strict,
             Expires = DateTimeOffset.UtcNow.AddMinutes(7)
         });
 
@@ -125,7 +135,7 @@ public class Mutation
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddDays(7) 
+            Expires = DateTimeOffset.UtcNow.AddDays(7)
         });
 
         return result;
