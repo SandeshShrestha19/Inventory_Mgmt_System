@@ -1,0 +1,7 @@
+public record UpdateProductInput
+(
+   string? Name,
+   string? Description,
+   int? Stock,
+  decimal? Price
+);

@@ -6,7 +6,6 @@ using ECommerce.API.GraphQL.Types;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using ECommerce.Applcation.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,11 +14,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddCors(options =>
 {
-options.AddPolicy("AllowFrontend", policy =>
-    policy.WithOrigins(builder.Configuration["AllowedOrigins"]!.Split(','))
-          .AllowAnyHeader()
-          .AllowAnyMethod()
-          .AllowCredentials());
+    options.AddPolicy("AllowFrontend", policy =>
+        policy.WithOrigins(builder.Configuration["AllowedOrigins"]!.Split(','))
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials());
 });
 
 builder.Services.AddAuthentication(options =>
@@ -58,7 +57,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddInfrastruture();
 builder.Services.AddApplication();
 builder.Services.AddLogging();
-
+builder.Services.AddScoped<ResponseMapper>();
 
 
 builder.Services

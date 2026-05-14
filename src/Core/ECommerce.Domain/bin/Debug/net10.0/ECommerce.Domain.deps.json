@@ -8,17 +8,47 @@
     ".NETCoreApp,Version=v10.0": {
       "ECommerce.Domain/1.0.0": {
         "dependencies": {
+          "FluentValidation.AspNetCore": "11.3.1",
           "HotChocolate.Types": "16.0.0"
         },
         "runtime": {
           "ECommerce.Domain.dll": {}
         }
       },
+      "FluentValidation/11.11.0": {
+        "runtime": {
+          "lib/net8.0/FluentValidation.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.11.0.0"
+          }
+        }
+      },
+      "FluentValidation.AspNetCore/11.3.1": {
+        "dependencies": {
+          "FluentValidation": "11.11.0",
+          "FluentValidation.DependencyInjectionExtensions": "11.11.0"
+        },
+        "runtime": {
+          "lib/net6.0/FluentValidation.AspNetCore.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.3.1.0"
+          }
+        }
+      },
+      "FluentValidation.DependencyInjectionExtensions/11.11.0": {
+        "dependencies": {
+          "FluentValidation": "11.11.0"
+        },
+        "runtime": {
+          "lib/netstandard2.1/FluentValidation.DependencyInjectionExtensions.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.11.0.0"
+          }
+        }
+      },
       "GreenDonut/16.0.0": {
         "dependencies": {
-          "GreenDonut.Abstractions": "16.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
-          "Microsoft.Extensions.ObjectPool": "10.0.0"
+          "GreenDonut.Abstractions": "16.0.0"
         },
         "runtime": {
           "lib/net10.0/GreenDonut.dll": {
@@ -72,8 +102,7 @@
           "HotChocolate.Primitives": "16.0.0",
           "HotChocolate.Text.Json": "16.0.0",
           "HotChocolate.Types.Abstractions": "16.0.0",
-          "HotChocolate.Utilities.Tasks": "16.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0"
+          "HotChocolate.Utilities.Tasks": "16.0.0"
         },
         "runtime": {
           "lib/net10.0/HotChocolate.Execution.Abstractions.dll": {
@@ -84,8 +113,7 @@
       },
       "HotChocolate.Execution.Configuration.Abstractions/16.0.0": {
         "dependencies": {
-          "HotChocolate.Abstractions": "16.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0"
+          "HotChocolate.Abstractions": "16.0.0"
         },
         "runtime": {
           "lib/net10.0/HotChocolate.Execution.Configuration.Abstractions.dll": {
@@ -109,8 +137,7 @@
       "HotChocolate.Execution.Pipeline/16.0.0": {
         "dependencies": {
           "HotChocolate.Execution.Abstractions": "16.0.0",
-          "HotChocolate.Validation": "16.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0"
+          "HotChocolate.Validation": "16.0.0"
         },
         "runtime": {
           "lib/net10.0/HotChocolate.Execution.Pipeline.dll": {
@@ -165,8 +192,7 @@
       },
       "HotChocolate.Language.SyntaxTree/16.0.0": {
         "dependencies": {
-          "HotChocolate.Utilities.Buffers": "16.0.0",
-          "Microsoft.Extensions.ObjectPool": "10.0.0"
+          "HotChocolate.Utilities.Buffers": "16.0.0"
         },
         "runtime": {
           "lib/net10.0/HotChocolate.Language.SyntaxTree.dll": {
@@ -222,8 +248,7 @@
       },
       "HotChocolate.PersistedOperations.Pipeline/16.0.0": {
         "dependencies": {
-          "HotChocolate.PersistedOperations.Abstractions": "16.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0"
+          "HotChocolate.PersistedOperations.Abstractions": "16.0.0"
         },
         "runtime": {
           "lib/net10.0/HotChocolate.PersistedOperations.Pipeline.dll": {
@@ -284,10 +309,7 @@
           "HotChocolate.Types.Abstractions": "16.0.0",
           "HotChocolate.Utilities": "16.0.0",
           "HotChocolate.Utilities.Base36": "16.0.0",
-          "HotChocolate.Utilities.DependencyInjection": "16.0.0",
-          "Microsoft.Extensions.DependencyInjection": "10.0.0",
-          "Microsoft.Extensions.ObjectPool": "10.0.0",
-          "Microsoft.Extensions.Options": "10.0.0"
+          "HotChocolate.Utilities.DependencyInjection": "16.0.0"
         },
         "runtime": {
           "lib/net10.0/HotChocolate.Types.dll": {
@@ -311,8 +333,7 @@
       "HotChocolate.Utilities/16.0.0": {
         "dependencies": {
           "HotChocolate.Utilities.Buffers": "16.0.0",
-          "HotChocolate.Utilities.Tasks": "16.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0"
+          "HotChocolate.Utilities.Tasks": "16.0.0"
         },
         "runtime": {
           "lib/net10.0/HotChocolate.Utilities.dll": {
@@ -338,9 +359,6 @@
         }
       },
       "HotChocolate.Utilities.DependencyInjection/16.0.0": {
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection": "10.0.0"
-        },
         "runtime": {
           "lib/net10.0/HotChocolate.Utilities.DependencyInjection.dll": {
             "assemblyVersion": "16.0.0.0",
@@ -359,60 +377,12 @@
       "HotChocolate.Validation/16.0.0": {
         "dependencies": {
           "HotChocolate.Execution.Abstractions": "16.0.0",
-          "HotChocolate.Types.Abstractions": "16.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0"
+          "HotChocolate.Types.Abstractions": "16.0.0"
         },
         "runtime": {
           "lib/net10.0/HotChocolate.Validation.dll": {
             "assemblyVersion": "16.0.0.0",
             "fileVersion": "16.0.0.0"
-          }
-        }
-      },
-      "Microsoft.Extensions.DependencyInjection/10.0.0": {
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0"
-        },
-        "runtime": {
-          "lib/net10.0/Microsoft.Extensions.DependencyInjection.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.25.52411"
-          }
-        }
-      },
-      "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.0": {
-        "runtime": {
-          "lib/net10.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.25.52411"
-          }
-        }
-      },
-      "Microsoft.Extensions.ObjectPool/10.0.0": {
-        "runtime": {
-          "lib/net10.0/Microsoft.Extensions.ObjectPool.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.25.52411"
-          }
-        }
-      },
-      "Microsoft.Extensions.Options/10.0.0": {
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
-          "Microsoft.Extensions.Primitives": "10.0.0"
-        },
-        "runtime": {
-          "lib/net10.0/Microsoft.Extensions.Options.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.25.52411"
-          }
-        }
-      },
-      "Microsoft.Extensions.Primitives/10.0.0": {
-        "runtime": {
-          "lib/net10.0/Microsoft.Extensions.Primitives.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.25.52411"
           }
         }
       }
@@ -423,6 +393,27 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "FluentValidation/11.11.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cyIVdQBwSipxWG8MA3Rqox7iNbUNUTK5bfJi9tIdm4CAfH71Oo5ABLP4/QyrUwuakqpUEPGtE43BDddvEehuYw==",
+      "path": "fluentvalidation/11.11.0",
+      "hashPath": "fluentvalidation.11.11.0.nupkg.sha512"
+    },
+    "FluentValidation.AspNetCore/11.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FjkfrGGwC+25oH8QpX1ti3gxkFjDDtotkAQWyQz2CkwQwEfRKTANjhh77I79kY8dov2ydK1SY+e4jiOWsbbDdQ==",
+      "path": "fluentvalidation.aspnetcore/11.3.1",
+      "hashPath": "fluentvalidation.aspnetcore.11.3.1.nupkg.sha512"
+    },
+    "FluentValidation.DependencyInjectionExtensions/11.11.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-viTKWaMbL3yJYgGI0DiCeavNbE9UPMWFVK2XS9nYXGbm3NDMd0/L5ER4wBzmTtW3BYh3SrlSXm9RACiKZ6stlA==",
+      "path": "fluentvalidation.dependencyinjectionextensions/11.11.0",
+      "hashPath": "fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512"
     },
     "GreenDonut/16.0.0": {
       "type": "package",
@@ -633,41 +624,6 @@
       "sha512": "sha512-Vb0iSVPHLXRtaGFTwDBczugDBAZQ0EWxAXDr1SKQyBq+CPeC6jA1nFlZFgZ6nJVAT8Lpdp5rMsNyt5lj2tRVww==",
       "path": "hotchocolate.validation/16.0.0",
       "hashPath": "hotchocolate.validation.16.0.0.nupkg.sha512"
-    },
-    "Microsoft.Extensions.DependencyInjection/10.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-f0RBabswJq+gRu5a+hWIobrLWiUYPKMhCD9WO3sYBAdSy3FFH14LMvLVFZc2kPSCimBLxSuitUhsd6tb0TAY6A==",
-      "path": "microsoft.extensions.dependencyinjection/10.0.0",
-      "hashPath": "microsoft.extensions.dependencyinjection.10.0.0.nupkg.sha512"
-    },
-    "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-L3AdmZ1WOK4XXT5YFPEwyt0ep6l8lGIPs7F5OOBZc77Zqeo01Of7XXICy47628sdVl0v/owxYJTe86DTgFwKCA==",
-      "path": "microsoft.extensions.dependencyinjection.abstractions/10.0.0",
-      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512"
-    },
-    "Microsoft.Extensions.ObjectPool/10.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-bpeCq0IYmVLACyEUMzFIOQX+zZUElG1t+nu1lSxthe7B+1oNYking7b91305+jNB6iwojp9fqTY9O+Nh7ULQxg==",
-      "path": "microsoft.extensions.objectpool/10.0.0",
-      "hashPath": "microsoft.extensions.objectpool.10.0.0.nupkg.sha512"
-    },
-    "Microsoft.Extensions.Options/10.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-8oCAgXOow5XDrY9HaXX1QmH3ORsyZO/ANVHBlhLyCeWTH5Sg4UuqZeOTWJi6484M+LqSx0RqQXDJtdYy2BNiLQ==",
-      "path": "microsoft.extensions.options/10.0.0",
-      "hashPath": "microsoft.extensions.options.10.0.0.nupkg.sha512"
-    },
-    "Microsoft.Extensions.Primitives/10.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-inRnbpCS0nwO/RuoZIAqxQUuyjaknOOnCEZB55KSMMjRhl0RQDttSmLSGsUJN3RQ3ocf5NDLFd2mOQViHqMK5w==",
-      "path": "microsoft.extensions.primitives/10.0.0",
-      "hashPath": "microsoft.extensions.primitives.10.0.0.nupkg.sha512"
     }
   }
 }

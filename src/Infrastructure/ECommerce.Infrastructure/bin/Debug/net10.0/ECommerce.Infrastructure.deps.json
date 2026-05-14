@@ -25,11 +25,42 @@
           }
         }
       },
+      "FluentValidation/11.11.0": {
+        "runtime": {
+          "lib/net8.0/FluentValidation.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.11.0.0"
+          }
+        }
+      },
+      "FluentValidation.AspNetCore/11.3.1": {
+        "dependencies": {
+          "FluentValidation": "11.11.0",
+          "FluentValidation.DependencyInjectionExtensions": "11.11.0"
+        },
+        "runtime": {
+          "lib/net6.0/FluentValidation.AspNetCore.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.3.1.0"
+          }
+        }
+      },
+      "FluentValidation.DependencyInjectionExtensions/11.11.0": {
+        "dependencies": {
+          "FluentValidation": "11.11.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.8"
+        },
+        "runtime": {
+          "lib/netstandard2.1/FluentValidation.DependencyInjectionExtensions.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.11.0.0"
+          }
+        }
+      },
       "GreenDonut/16.0.0": {
         "dependencies": {
           "GreenDonut.Abstractions": "16.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.8",
-          "Microsoft.Extensions.ObjectPool": "10.0.0"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.8"
         },
         "runtime": {
           "lib/net10.0/GreenDonut.dll": {
@@ -176,8 +207,7 @@
       },
       "HotChocolate.Language.SyntaxTree/16.0.0": {
         "dependencies": {
-          "HotChocolate.Utilities.Buffers": "16.0.0",
-          "Microsoft.Extensions.ObjectPool": "10.0.0"
+          "HotChocolate.Utilities.Buffers": "16.0.0"
         },
         "runtime": {
           "lib/net10.0/HotChocolate.Language.SyntaxTree.dll": {
@@ -297,7 +327,6 @@
           "HotChocolate.Utilities.Base36": "16.0.0",
           "HotChocolate.Utilities.DependencyInjection": "16.0.0",
           "Microsoft.Extensions.DependencyInjection": "10.0.8",
-          "Microsoft.Extensions.ObjectPool": "10.0.0",
           "Microsoft.Extensions.Options": "10.0.8"
         },
         "runtime": {
@@ -405,7 +434,6 @@
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "10.0.8",
           "Microsoft.Extensions.Caching.Memory": "10.0.8",
-          "Microsoft.Extensions.Configuration.Abstractions": "10.0.4",
           "Microsoft.Extensions.Logging": "10.0.8"
         },
         "runtime": {
@@ -438,17 +466,6 @@
           "lib/net10.0/Microsoft.Extensions.Caching.Memory.dll": {
             "assemblyVersion": "10.0.0.0",
             "fileVersion": "10.0.826.23019"
-          }
-        }
-      },
-      "Microsoft.Extensions.Configuration.Abstractions/10.0.4": {
-        "dependencies": {
-          "Microsoft.Extensions.Primitives": "10.0.8"
-        },
-        "runtime": {
-          "lib/net10.0/Microsoft.Extensions.Configuration.Abstractions.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.426.12010"
           }
         }
       },
@@ -492,14 +509,6 @@
           "lib/net10.0/Microsoft.Extensions.Logging.Abstractions.dll": {
             "assemblyVersion": "10.0.0.0",
             "fileVersion": "10.0.826.23019"
-          }
-        }
-      },
-      "Microsoft.Extensions.ObjectPool/10.0.0": {
-        "runtime": {
-          "lib/net10.0/Microsoft.Extensions.ObjectPool.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.25.52411"
           }
         }
       },
@@ -549,6 +558,7 @@
       },
       "ECommerce.Domain/1.0.0": {
         "dependencies": {
+          "FluentValidation.AspNetCore": "11.3.1",
           "HotChocolate.Types": "16.0.0"
         },
         "runtime": {
@@ -572,6 +582,27 @@
       "sha512": "sha512-gwLD2KfCuwQesP17aVh4h6lpiMPEVt5Lbpndo0ej903hNUUTtyxt3ARdDjmuydBRTAUICc7OVKVbaOvc6SQYXA==",
       "path": "bcrypt.net-next/4.2.0",
       "hashPath": "bcrypt.net-next.4.2.0.nupkg.sha512"
+    },
+    "FluentValidation/11.11.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cyIVdQBwSipxWG8MA3Rqox7iNbUNUTK5bfJi9tIdm4CAfH71Oo5ABLP4/QyrUwuakqpUEPGtE43BDddvEehuYw==",
+      "path": "fluentvalidation/11.11.0",
+      "hashPath": "fluentvalidation.11.11.0.nupkg.sha512"
+    },
+    "FluentValidation.AspNetCore/11.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FjkfrGGwC+25oH8QpX1ti3gxkFjDDtotkAQWyQz2CkwQwEfRKTANjhh77I79kY8dov2ydK1SY+e4jiOWsbbDdQ==",
+      "path": "fluentvalidation.aspnetcore/11.3.1",
+      "hashPath": "fluentvalidation.aspnetcore.11.3.1.nupkg.sha512"
+    },
+    "FluentValidation.DependencyInjectionExtensions/11.11.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-viTKWaMbL3yJYgGI0DiCeavNbE9UPMWFVK2XS9nYXGbm3NDMd0/L5ER4wBzmTtW3BYh3SrlSXm9RACiKZ6stlA==",
+      "path": "fluentvalidation.dependencyinjectionextensions/11.11.0",
+      "hashPath": "fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512"
     },
     "GreenDonut/16.0.0": {
       "type": "package",
@@ -818,13 +849,6 @@
       "path": "microsoft.extensions.caching.memory/10.0.8",
       "hashPath": "microsoft.extensions.caching.memory.10.0.8.nupkg.sha512"
     },
-    "Microsoft.Extensions.Configuration.Abstractions/10.0.4": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-3x9X9SMAMdAoEwWxHfsT2a9dTBqEtfYfbEOFw+UPtBshEH2gHWJeazxrZ1FK1O18MoCbe1NxINg5qciB01pEcg==",
-      "path": "microsoft.extensions.configuration.abstractions/10.0.4",
-      "hashPath": "microsoft.extensions.configuration.abstractions.10.0.4.nupkg.sha512"
-    },
     "Microsoft.Extensions.DependencyInjection/10.0.8": {
       "type": "package",
       "serviceable": true,
@@ -852,13 +876,6 @@
       "sha512": "sha512-fdVadZmsC8jRP0KvKy8mO8f6GV/HyBvElfcSxEhd+5FM5boAw/01iSaCto5G3G37ApJira4A3pNaVvBv8cUiLQ==",
       "path": "microsoft.extensions.logging.abstractions/10.0.8",
       "hashPath": "microsoft.extensions.logging.abstractions.10.0.8.nupkg.sha512"
-    },
-    "Microsoft.Extensions.ObjectPool/10.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-bpeCq0IYmVLACyEUMzFIOQX+zZUElG1t+nu1lSxthe7B+1oNYking7b91305+jNB6iwojp9fqTY9O+Nh7ULQxg==",
-      "path": "microsoft.extensions.objectpool/10.0.0",
-      "hashPath": "microsoft.extensions.objectpool.10.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.Options/10.0.8": {
       "type": "package",
