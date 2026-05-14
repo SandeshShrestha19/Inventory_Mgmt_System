@@ -19,6 +19,7 @@ public static class DependencyInjection
     services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
     services.AddScoped<ILogoutUseCase, LogoutUseCase>();
     services.AddScoped<IRefreshTokenUseCase, RefreshTokenUseCase>();
+    services.AddScoped<ISetUserActiveStatusUseCase, SetUserActiveStatusUseCase>();
     services.AddScoped<JwtTokenGenerator>();
     return services;
   }

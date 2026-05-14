@@ -59,7 +59,7 @@
           "dependencies": {
             "HotChocolate.AspNetCore": {
               "target": "Package",
-              "version": "[16.0.0, )"
+              "version": "[16.0.2, )"
             },
             "HotChocolate.AspNetCore.Authorization": {
               "target": "Package",

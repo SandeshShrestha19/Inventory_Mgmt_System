@@ -18,7 +18,7 @@ public class Query
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public IQueryable<Order> GetOrders([Service] IOrderRepository repo) =>
         repo.GetAllAsync();
 

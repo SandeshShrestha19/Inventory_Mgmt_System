@@ -48,6 +48,10 @@ public class LoginUseCase : ILoginUseCase
       {
         throw new Exception("Invalid email or Password!");
       }
+      if(!user.IsActive)
+      {
+        throw new Exception("Your account has been deactivated! Contact admin");
+      }
 
       var token = _jwtTokenGenerator.GenerateAccessToken(user);
 

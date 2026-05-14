@@ -53,6 +53,7 @@ public class AppDbContext : DbContext
                 Name = "Administrator",
                 Email = "admin123@gmail.com",
                 Role = "Admin",
+                IsActive = true,
                 Password = "AQAAAAIAAYagAAAAENWUApdzPmQWudXPT/eH43MRNkXC5P5E3Uq5JF4uSxxuCaf2pXJY5EzEFzUtY+VnYA=="
             }
         ]);

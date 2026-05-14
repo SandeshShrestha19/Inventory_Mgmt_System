@@ -36,7 +36,9 @@ public class JwtTokenGenerator
           new Claim(JwtRegisteredClaimNames.Email, user.Email), //helps to know who is logged in
           new Claim(JwtRegisteredClaimNames.Name, user.Name),
           new Claim(ClaimTypes.Role, user.Role) ,  // this makes the role based authorization work     
-          new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+          new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+          new Claim("IsActive", user.IsActive.ToString().ToLower()),
+          new Claim("IsLoggedIn", user.IsLoggedIn.ToString().ToLower()),
       }),
       Issuer = issuer,
       Audience = audience,
