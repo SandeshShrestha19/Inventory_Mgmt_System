@@ -12,7 +12,7 @@ public class ProductResponseUseCase : IProductResponseUseCase
     _logger = logger;
   }
 
-  public async Task<ProductResponseModel> ExecuteAsync(Guid id)
+  public async Task<ProductResponseModel> GetByIdAsync(Guid id)
   {
     try
     {

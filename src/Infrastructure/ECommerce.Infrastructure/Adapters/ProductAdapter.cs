@@ -14,7 +14,10 @@ public class ProductAdapter : IProductRepository
         _context = context;
     }
 
-    public IQueryable<Product> GetAllAsync() => _context.Products.AsQueryable();
+    public IQueryable<Product> GetAllAsync()
+    {
+       return _context.Products.AsQueryable(); 
+    } 
 
     public async Task<Product?> GetByIdAsync(Guid id) =>
         await _context.Products.FindAsync(id);

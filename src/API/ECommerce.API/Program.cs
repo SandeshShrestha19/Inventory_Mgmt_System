@@ -86,10 +86,9 @@ var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
-// Program.cs
 app.Use(async (context, next) =>
 {
-    if (context.User.Identity?.IsAuthenticated == true)
+   if (context.User.Identity?.IsAuthenticated == true)
     {
         var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -98,17 +97,17 @@ app.Use(async (context, next) =>
             var dbContext = context.RequestServices.GetRequiredService<AppDbContext>();
             var user = await dbContext.Users.FindAsync(Guid.Parse(userId));
 
-            if (user != null && !user.IsActive)
+            if(user != null && !user.IsActive)
             {
                 context.Response.StatusCode = 403;
-                await context.Response.WriteAsJsonAsync(new 
-                { 
-                    message = "Your account has been disabled! Contact admin." 
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    message = "Your account has been disabled! Contact admin."
                 });
                 return;
             }
         }
-    }
+    } 
     await next();
 });
 

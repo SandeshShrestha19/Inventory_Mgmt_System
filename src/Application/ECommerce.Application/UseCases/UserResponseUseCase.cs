@@ -12,7 +12,7 @@ public class UserResponseUseCase : IUserResponseUseCase
     _logger = logger;
   }
 
-  public async Task<UserResponseModel> ExecuteAsync(Guid id)
+  public async Task<UserResponseModel> GetByIdAsync(Guid id)
   {
     try
     {
