@@ -21,6 +21,7 @@ public static class DependencyInjection
     services.AddScoped<IRefreshTokenUseCase, RefreshTokenUseCase>();
     services.AddScoped<ISetUserActiveStatusUseCase, SetUserActiveStatusUseCase>();
     services.AddScoped<JwtTokenGenerator>();
+    services.AddScoped<IBlacklistedTokenUseCase, BlacklistedTokenUseCase>();
 
     services.AddScoped<IGetProductQueryUseCase, GetProductQueryUseCase>();
     services.AddScoped<IGetUserQueryUseCase, GetUserQueryUseCase>();

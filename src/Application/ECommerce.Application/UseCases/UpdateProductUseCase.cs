@@ -22,8 +22,8 @@ public class UpdateProductUseCase : IUpdateProductUseCase
         {
             var product = await _productRepository.GetByIdAsync(id) ?? throw new Exception("Product not found!");
 
-            product.Name = updateModel.Name;
-            product.Description = updateModel.Description;
+            product.Name = updateModel.Name ?? product.Name;
+            product.Description = updateModel.Description ?? product.Description;
             if (updateModel.Price.HasValue)
             {
                 product.Price = updateModel.Price.Value;

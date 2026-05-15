@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Order> Orders { get; set; }
+    public DbSet<BlacklistedToken> BlacklistedTokens {get; set;}
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
 
@@ -35,6 +36,12 @@ public class AppDbContext : DbContext
             entity.HasOne(u => u.User)
                     .WithMany(u => u.RefreshTokens)
                     .HasForeignKey(u => u.UserId);
+        });
+
+        modelBuilder.Entity<BlacklistedToken>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.HasIndex(x => x.Jti).IsUnique();
         });
 
         // Order

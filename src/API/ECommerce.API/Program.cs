@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using ECommerce.Domain.Ports;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -90,6 +92,26 @@ app.Use(async (context, next) =>
 {
    if (context.User.Identity?.IsAuthenticated == true)
     {
+        var jti = context.User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+
+        if(jti != null)
+        {
+            var blacklistedRepo = context.RequestServices.GetRequiredService<IBlacklistedTokenRepository>();
+
+            var isBlacklisted = await blacklistedRepo.IsBlacklistedAsync(jti);
+
+            if (isBlacklisted)
+            {
+                context.Response.StatusCode = 401;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    message = "Token has been revoked! Please try again!"
+                });
+                return;
+            }
+        }
+
+
         var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (userId != null)

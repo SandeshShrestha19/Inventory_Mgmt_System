@@ -12,6 +12,7 @@ public static class DependencyInjection
     services.AddScoped<IOrderRepository, OrderAdapter>();
     services.AddScoped<IUserRepository, UserAdapter>();
     services.AddScoped<IRefreshTokenRepository, RefreshTokenAdapter>();
+    services.AddScoped<IBlacklistedTokenRepository, BlacklistedTokenAdapter>();
     services.AddScoped<UserActivityJob>();
     return services;
   }

@@ -4,6 +4,7 @@ using ECommerce.Domain.Ports;
 using Ecommerce.Domain.Models;
 using HotChocolate.Authorization;
 using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ECommerce.API.GraphQL.Mutations;
 
@@ -151,9 +152,16 @@ public class Mutation
         var userId = httpContextAccessor.HttpContext!.User
         .FindFirst(ClaimTypes.NameIdentifier)?.Value; //get userId from token
 
+        var jti = httpContextAccessor.HttpContext!.User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value; //get jti from token
+
+        var expiry = httpContextAccessor.HttpContext!.User.FindFirst(JwtRegisteredClaimNames.Exp)?.Value
+        ?? throw new Exception("Token expiry not found!");
+
+        var tokenExpiry = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expiry)).UtcDateTime;
+
         var refreshToken = httpContextAccessor.HttpContext!.Request.Cookies["refreshToken"] ?? throw new Exception("Refresh token not found!"); //request for refresh token from cookie
 
-        await logoutUseCase.ExecuteAsync(Guid.Parse(userId!), refreshToken);
+        await logoutUseCase.ExecuteAsync(Guid.Parse(userId!), refreshToken, jti, tokenExpiry);
 
         httpContextAccessor.HttpContext.Response.Cookies.Delete("token");
         httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
