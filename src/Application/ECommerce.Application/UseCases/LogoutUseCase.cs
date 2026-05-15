@@ -36,7 +36,8 @@ public class LogoutUseCase: ILogoutUseCase
       {
         Id = Guid.NewGuid(),
         Jti = jti,
-        ExpiresAt = expiresAt
+        ExpiresAt = expiresAt,
+        CreatedAt = DateTime.UtcNow
       });
       
       await _unitOfWork.SaveChangesAsync();
