@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
-  public static IServiceCollection AddInfrastruture(this IServiceCollection services)
+  public static IServiceCollection AddInfrastrutureDependencies(this IServiceCollection services)
   {
     services.AddScoped<IUnitOfWork, UnitOfWork>();
     services.AddScoped<IProductRepository, ProductAdapter>();

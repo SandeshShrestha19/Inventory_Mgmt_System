@@ -63,8 +63,8 @@ builder.Services.AddAuthorization(options =>
             context.User.HasClaim(c => c.Type == "IsLoggedIn" && c.Value =="true"));
     });
 });
-builder.Services.AddInfrastruture();
-builder.Services.AddApplication();
+builder.Services.AddInfrastrutureDependencies();
+builder.Services.AddApplicationDependencies();
 builder.Services.AddLogging();
 builder.Services.AddScoped<ResponseMapper>();
 

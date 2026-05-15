@@ -12,9 +12,9 @@ public class Mutation
     //Mutation = Controller
     [Authorize(Roles = ["Admin"])]
     public async Task<Product> AddProduct(
-        [Service] IAddProductUseCase addUseCase,
+        [Service] IProductFacade productFacade,
         ProductInput productInput) =>
-        await addUseCase.ExecuteAsync(new AddProductModel
+        await productFacade.AddAsync(new AddProductModel
         {
             Name = productInput.Name,
             Description = productInput.Description,
@@ -23,9 +23,9 @@ public class Mutation
         });
 
     [Authorize(Roles = ["Admin"])]
-    public async Task<bool> UpdateProduct([Service] IUpdateProductUseCase updateUseCase, Guid id, UpdateProductInput udpateProductInput)
+    public async Task<bool> UpdateProduct([Service] IProductFacade productFacade, Guid id, UpdateProductInput udpateProductInput)
     {
-        await updateUseCase.ExecuteAsync(id, new UpdateProductModel
+        await productFacade.UpdateAsync(id, new UpdateProductModel
         {
             Name = udpateProductInput.Name,
             Description = udpateProductInput.Description,
@@ -37,13 +37,13 @@ public class Mutation
 
     [Authorize(Roles = ["Admin", "Mananger"])]
     public async Task<bool> DeleteProduct(
-    [Service] IProductRepository repo,
+    [Service] IProductFacade productFacade,
     Guid id) =>
-    await repo.DeleteAsync(id);
+    await productFacade.DeleteAsync(id);
 
-    public async Task<User> RegisterUser([Service] IRegisterUserUseCase addUserUseCase, UserInput userInput)
+    public async Task<User> RegisterUser([Service] IUserFacade userFacade, UserInput userInput)
     {
-        return await addUserUseCase.ExecuteAsync(new AddUserModel
+        return await userFacade.AddAsync(new AddUserModel
         {
             Name = userInput.Name,
             Email = userInput.Email,
@@ -52,15 +52,15 @@ public class Mutation
         });
     }
     [Authorize]
-    public async Task<bool> DeleteUser([Service] IUserRepository repo, Guid id)
+    public async Task<bool> DeleteUser([Service] IUserFacade userFacade, Guid id)
     {
-        return await repo.DeleteAsync(id);
+        return await userFacade.DeleteAsync(id);
     }
 
     [Authorize]
-    public async Task<bool> UpdateUser([Service] IUpdateUserUseCase updateUserUseCase, Guid id, UpdateUserInput updateUserInput)
+    public async Task<bool> UpdateUser([Service] IUserFacade userFacade, Guid id, UpdateUserInput updateUserInput)
     {
-        await updateUserUseCase.ExecuteAsync(id, new UpdateUserModel
+        await userFacade.UpdateAsync(id, new UpdateUserModel
         {
             Name = updateUserInput.Name,
             Email = updateUserInput.Email,
@@ -72,10 +72,10 @@ public class Mutation
 
     [Authorize(Policy = "ActiveUser")]
     public async Task<Order> PlaceOrder(
-    [Service] IPlaceOrderUseCase placeOrderUseCase,
+    [Service] IOrderFacade orderFacade,
     OrderInput orderInput)
     {
-        return await placeOrderUseCase.ExecuteAsync(new PlaceOrderModel
+        return await orderFacade.AddAsync(new PlaceOrderModel
         {
             UserId = orderInput.UserId,
             Items = orderInput.Items.Select(item => new OrderItemModel
@@ -87,25 +87,25 @@ public class Mutation
     }
 
     [Authorize(Policy = "ActiveUser")]
-    public async Task<bool> DeleteOrder([Service] IOrderRepository repo, Guid id)
+    public async Task<bool> DeleteOrder([Service] IOrderFacade orderFacade, Guid id)
     {
-        return await repo.DeleteAsync(id);
+        return await orderFacade.DeleteAsync(id);
     }
 
     [Authorize(Policy = "ActiveUser")]
 
     public async Task<bool> UpdateOrder(
-    [Service] IUpdateOrderUseCase updateOrderUseCase,
+    [Service] IOrderFacade orderFacade,
     Guid id,
     UpdateOrderInput updateOrderInput)
     {
-        await updateOrderUseCase.ExecuteAsync(id, new UpdateOrderModel
+        await orderFacade.UpdateAsync(id, new UpdateOrderModel
         {
             Items = updateOrderInput.Items.Select(item => new UpdateOrderItemModel
             {
-                ProductId = item.ProductId,  
+                ProductId = item.ProductId,
                 Quantity = item.Quantity
-            }).ToList() 
+            }).ToList()
         });
         return true;
     }
@@ -178,7 +178,7 @@ public class Mutation
     }
 
     [Authorize(Roles = ["Admin"])]
-    public async Task<bool> SetUserActiveStatus([Service] ISetUserActiveStatusUseCase setUserActiveStatusUseCase,Guid userId, bool isActive)
+    public async Task<bool> SetUserActiveStatus([Service] ISetUserActiveStatusUseCase setUserActiveStatusUseCase, Guid userId, bool isActive)
     {
         await setUserActiveStatusUseCase.ExecuteAsync(userId, isActive);
         return true;
