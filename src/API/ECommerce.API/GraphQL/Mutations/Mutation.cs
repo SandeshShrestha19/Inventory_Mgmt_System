@@ -143,7 +143,6 @@ public class Mutation
         return result;
     }
 
-
     //clears the cookie
     [Authorize]
     public async Task<bool> Logout([Service] ILogoutUseCase logoutUseCase,

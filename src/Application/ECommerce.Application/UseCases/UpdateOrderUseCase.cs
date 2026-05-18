@@ -1,4 +1,5 @@
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.Exceptions;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
 
@@ -22,11 +23,11 @@ public class UpdateOrderUseCase : IUpdateOrderUseCase
   {
     try
     {
-      var order = await _orderRepository.GetByIdAsync(id) ?? throw new Exception("Order not found!");
+      var order = await _orderRepository.GetByIdAsync(id) ?? throw NotFoundException.Order();
 
       foreach (var item in model.Items)
       {
-        var product = await _productRepository.GetByIdAsync(item.ProductId) ?? throw new Exception("Product not found!");
+        var product = await _productRepository.GetByIdAsync(item.ProductId) ?? throw NotFoundException.Product();
 
         var existingItem = order.OrderItems
                     .FirstOrDefault(oi => oi.ProductId == item.ProductId);
@@ -46,7 +47,7 @@ public class UpdateOrderUseCase : IUpdateOrderUseCase
 
           if (difference > 0 && product.Stock < difference)
           {
-            throw new Exception($"Insufficient stock for {product.Name}!");
+            throw new ValidationException($"Insufficient stock for {product.Name}!");
           }
 
           product.Stock -= difference;
@@ -57,7 +58,7 @@ public class UpdateOrderUseCase : IUpdateOrderUseCase
         {
           if (product.Stock < item.Quantity)
           {
-            throw new Exception($"Insufficient stock for {product.Name}!");
+            throw new ValidationException($"Insufficient stock for {product.Name}!");
           }
 
           product.Stock -= item.Quantity;

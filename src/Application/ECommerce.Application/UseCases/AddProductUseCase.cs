@@ -2,6 +2,7 @@ using ECommerce.Domain.Models;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 
 public class AddProductUseCase : IAddProductUseCase
 {
@@ -20,17 +21,17 @@ public class AddProductUseCase : IAddProductUseCase
         {
             if (string.IsNullOrWhiteSpace(model.Name))
             {
-                throw new Exception("Product name is required");
+                throw new ValidationException("Product name is required");
             }
 
             if (model.Price <= 0)
             {
-                throw new Exception("Price must be greater than 0");
+                throw new ValidationException("Price must be greater than 0");
             }
 
             if (model.Stock < 0)
             {
-                throw new Exception("Stock cannot be negative");
+                throw new ValidationException("Stock cannot be negative");
             }
 
             var product = new Product

@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using ECommerce.Applcation.Helpers;
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.Exceptions;
 using ECommerce.Domain.Models;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Configuration;
@@ -37,20 +38,20 @@ public class LoginUseCase : ILoginUseCase
     {
       if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
       {
-        throw new Exception("Email or Password field is emplty!");
+        throw new ValidationException("Email or Password field is empty!");
       }
 
       //verify user by email
-      var user = _userRepository.GetAllAsync().FirstOrDefault(u => u.Email == model.Email) ?? throw new Exception("Invalid email or Password!");
+      var user = _userRepository.GetAllAsync().FirstOrDefault(u => u.Email == model.Email) ?? throw new UnauthorizedException();
 
       var isValid = PasswordHashHandler.VerifyPassword(model.Password, user.Password);
       if (!isValid)
       {
-        throw new Exception("Invalid email or Password!");
+        throw new UnauthorizedException();
       }
       if(!user.IsActive)
       {
-        throw new Exception("Your account has been deactivated! Contact admin");
+        throw BusinessException.AccountDisabled();
       }
 
       var token = _jwtTokenGenerator.GenerateAccessToken(user);

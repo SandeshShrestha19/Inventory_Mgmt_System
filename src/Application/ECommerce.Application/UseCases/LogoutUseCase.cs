@@ -1,3 +1,4 @@
+using ECommerce.Domain.Exceptions;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
 
@@ -22,12 +23,12 @@ public class LogoutUseCase: ILogoutUseCase
   {
     try
     {
-      var user = await _userRepository.GetByIdAsync(id) ?? throw new Exception("User not found!");
+      var user = await _userRepository.GetByIdAsync(id) ?? throw NotFoundException.User();
 
       user.IsLoggedIn = false;
       await _userRepository.UpdateAsync(user);
 
-      var storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken) ?? throw new Exception("Refresh token not found!");
+      var storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken) ?? throw NotFoundException.RefreshToken();
 
       storedToken.IsRevoked = true;
       await _refreshTokenRepository.UpdateASync(storedToken);

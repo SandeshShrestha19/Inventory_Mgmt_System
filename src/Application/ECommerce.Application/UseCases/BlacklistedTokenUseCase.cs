@@ -24,7 +24,7 @@ public class BlacklistedTokenUseCase : IBlacklistedTokenUseCase
     }
     catch(Exception ex)
     {
-      _logger.LogInformation(ex, "Failed to create jti token!");
+      _logger.LogError(ex, "Failed to create jti token!");
       throw;
     }
   }

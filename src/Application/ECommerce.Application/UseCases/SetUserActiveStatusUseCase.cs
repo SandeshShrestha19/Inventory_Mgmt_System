@@ -1,3 +1,4 @@
+using ECommerce.Domain.Exceptions;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
 
@@ -18,7 +19,7 @@ public class SetUserActiveStatusUseCase : ISetUserActiveStatusUseCase
   {
     try
     {
-      var user = await _userRepository.GetByIdAsync(userId) ?? throw new Exception("User not found!");
+      var user = await _userRepository.GetByIdAsync(userId) ?? throw NotFoundException.User();
       user.IsActive = isActive;
       await _userRepository.UpdateAsync(user);
       await _unitOfWork.SaveChangesAsync();

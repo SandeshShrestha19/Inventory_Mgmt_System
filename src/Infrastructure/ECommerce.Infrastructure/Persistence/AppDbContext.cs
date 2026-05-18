@@ -53,6 +53,7 @@ public class AppDbContext : DbContext
                   .HasForeignKey(o => o.UserId);
         });
 
+
         modelBuilder.Entity<User>().HasData([
             new User{
                 Id = new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890"), 

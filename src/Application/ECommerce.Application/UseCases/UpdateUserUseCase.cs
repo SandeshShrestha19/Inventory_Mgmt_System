@@ -2,6 +2,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
 using Ecommerce.Domain.Models;
+using ECommerce.Domain.Exceptions;
 
 namespace ECommerce.Application.UseCases;
 
@@ -21,7 +22,7 @@ public class UpdateUserUseCase : IUpdateUserUseCase
         try
         {
             var user = await _userRepository.GetByIdAsync(id)
-                ?? throw new Exception("User not found!");
+                ?? throw NotFoundException.User();
 
             if (!string.IsNullOrWhiteSpace(model.Name))
             {
