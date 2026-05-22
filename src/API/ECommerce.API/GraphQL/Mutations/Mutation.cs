@@ -70,7 +70,7 @@ public class Mutation
         return true;
     }
 
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<Order> PlaceOrder(
     [Service] IPlaceOrderUseCase placeOrderUseCase,
     OrderInput orderInput)
@@ -86,12 +86,13 @@ public class Mutation
         });
     }
 
+    [Authorize(Policy = "ActiveUser")]
     public async Task<bool> DeleteOrder([Service] IOrderRepository repo, Guid id)
     {
         return await repo.DeleteAsync(id);
     }
 
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
 
     public async Task<bool> UpdateOrder(
     [Service] IUpdateOrderUseCase updateOrderUseCase,
@@ -174,5 +175,12 @@ public class Mutation
             Expires = DateTimeOffset.UtcNow.AddMinutes(7)
         });
         return newAccessToken;
+    }
+
+    [Authorize(Roles = ["Admin"])]
+    public async Task<bool> SetUserActiveStatus([Service] ISetUserActiveStatusUseCase setUserActiveStatusUseCase,Guid userId, bool isActive)
+    {
+        await setUserActiveStatusUseCase.ExecuteAsync(userId, isActive);
+        return true;
     }
 }

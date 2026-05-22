@@ -4,5 +4,5 @@ namespace ECommerce.Domain.Ports;
 
 public interface IUserResponseUseCase
 {
-  Task<UserResponseModel> ExecuteAsync(Guid id);
+  Task<UserResponseModel> GetByIdAsync(Guid id);
 }

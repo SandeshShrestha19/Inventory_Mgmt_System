@@ -12,7 +12,7 @@ public class OrderResponseUseCase : IOrderResponseUseCase
     _logger = logger;
   }
 
-  public async Task<OrderResponseModel> ExecuteAsync(Guid id)
+  public async Task<OrderResponseModel> GetByIdAsync(Guid id)
   {
     try
     {

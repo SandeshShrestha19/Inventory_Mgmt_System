@@ -141,6 +141,9 @@ namespace ECommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsLoggedIn")
                         .HasColumnType("boolean");
 
@@ -169,6 +172,7 @@ namespace ECommerce.Infrastructure.Migrations
                             Id = new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "admin123@gmail.com",
+                            IsActive = true,
                             IsLoggedIn = false,
                             Name = "Administrator",
                             Password = "AQAAAAIAAYagAAAAENWUApdzPmQWudXPT/eH43MRNkXC5P5E3Uq5JF4uSxxuCaf2pXJY5EzEFzUtY+VnYA==",

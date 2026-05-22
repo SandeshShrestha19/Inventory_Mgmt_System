@@ -6,6 +6,7 @@ using ECommerce.API.GraphQL.Types;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +54,15 @@ builder.Services.AddAuthentication(options =>
         }
     };
 });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ActiveUser", policy =>
+    {
+        policy.RequireAssertion(context => 
+            context.User.HasClaim(c => c.Type =="IsActive" && c.Value =="true")&&
+            context.User.HasClaim(c => c.Type == "IsLoggedIn" && c.Value =="true"));
+    });
+});
 builder.Services.AddInfrastruture();
 builder.Services.AddApplication();
 builder.Services.AddLogging();
@@ -77,6 +86,30 @@ var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.Use(async (context, next) =>
+{
+   if (context.User.Identity?.IsAuthenticated == true)
+    {
+        var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId != null)
+        {
+            var dbContext = context.RequestServices.GetRequiredService<AppDbContext>();
+            var user = await dbContext.Users.FindAsync(Guid.Parse(userId));
+
+            if(user != null && !user.IsActive)
+            {
+                context.Response.StatusCode = 403;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    message = "Your account has been disabled! Contact admin."
+                });
+                return;
+            }
+        }
+    } 
+    await next();
+});
 
 app.MapGraphQL();
 

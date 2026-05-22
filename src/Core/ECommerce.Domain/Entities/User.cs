@@ -6,6 +6,7 @@ public class User
     public string Name { get; set; }
     public string Email { get; set; }
     public bool IsLoggedIn {get; set;} = false;
+    public bool IsActive {get; set;} = true;
     public string Role { get; set;} = string.Empty;  //single-role based for now
     public ICollection<Order> Orders {get; set;} = new List<Order>();
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
