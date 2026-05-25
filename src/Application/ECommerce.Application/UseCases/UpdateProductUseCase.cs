@@ -2,6 +2,7 @@ using ECommerce.Domain.Models;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
+using ECommerce.Domain.Exceptions;
 
 namespace ECommerce.Application.UseCases;
 
@@ -20,10 +21,10 @@ public class UpdateProductUseCase : IUpdateProductUseCase
     {
         try
         {
-            var product = await _productRepository.GetByIdAsync(id) ?? throw new Exception("Product not found!");
+            var product = await _productRepository.GetByIdAsync(id) ?? throw NotFoundException.Product();
 
-            product.Name = updateModel.Name;
-            product.Description = updateModel.Description;
+            product.Name = updateModel.Name ?? product.Name;
+            product.Description = updateModel.Description ?? product.Description;
             if (updateModel.Price.HasValue)
             {
                 product.Price = updateModel.Price.Value;

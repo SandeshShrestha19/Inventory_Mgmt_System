@@ -37,6 +37,11 @@ public class UserAdapter : IUserRepository
           .AsQueryable();
   }
 
+  public async Task<User> GetByEmail(string email)
+  {
+    return await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+  }
+
   public async Task<User?> GetByIdAsync(Guid id)
   {
     return await _dbContext.Users

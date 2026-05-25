@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
 
@@ -16,7 +17,7 @@ public class OrderResponseUseCase : IOrderResponseUseCase
   {
     try
     {
-      var order = await _orderRepository.GetByIdAsync(id) ?? throw new Exception("User not found!");
+      var order = await _orderRepository.GetByIdAsync(id) ?? throw new ValidationException("User not found!");
       return ResponseMapper.ToOrderResponse(order);
     }
     catch(Exception ex)

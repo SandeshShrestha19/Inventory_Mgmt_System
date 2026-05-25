@@ -1,4 +1,5 @@
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.Exceptions;
 using ECommerce.Domain.Models;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
@@ -32,17 +33,17 @@ public class PlaceOrderUseCase : IPlaceOrderUseCase
         try
         {
             var user = await _userRepository.GetByIdAsync(model.UserId)
-                ?? throw new Exception("User not found!");
+                ?? throw NotFoundException.User();
 
             var orderItems = new List<OrderItem>();
 
             foreach (var item in model.Items)
             {
                 var product = await _productRepository.GetByIdAsync(item.ProductId)
-                    ?? throw new Exception($"Product {item.ProductId} not found!");
+                    ?? throw NotFoundException.Product();
 
                 if (product.Stock < item.Quantity)
-                    throw new Exception("Product stock is less than order quantity!");
+                    throw new ValidationException("Product stock is less than order quantity!");
 
                 product.Stock -= item.Quantity;
                 await _productRepository.UpdateAsync(product);

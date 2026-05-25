@@ -57,6 +57,13 @@ public class UserActivityJob : BackgroundService
         }
       }
     }
+    var expiredTokens = await context.BlacklistedTokens.Where(x => x.ExpiresAt < DateTime.UtcNow).ToListAsync();
+
+    if (expiredTokens.Any())
+    {
+      context.BlacklistedTokens.RemoveRange(expiredTokens);
+      _logger.LogInformation($"Cleaned up {expiredTokens.Count()} expired blacklisted tokens!");
+    }
 
     await context.SaveChangesAsync();
   }

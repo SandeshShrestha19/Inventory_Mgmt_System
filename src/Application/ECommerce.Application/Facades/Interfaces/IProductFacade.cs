@@ -6,6 +6,8 @@ public interface IProductFacade
   IQueryable<ProductResponseModel> GetAll(Guid? cursorId, int pageSize);
   Task<ProductResponseModel> GetByIdAsync(Guid id);
   Task<Product> AddAsync(AddProductModel addModel);
-  Task UdpateAsync(Guid id, UpdateProductModel udpateModel);
+  Task UpdateAsync(Guid id, UpdateProductModel udpateModel);
   Task<bool> DeleteAsync(Guid id);
+  Task IncreaseStockAsync(Guid id, int increasingQuantity);
+  Task DecreaseStockAsync(Guid id, int decreasingQuantity);
 }

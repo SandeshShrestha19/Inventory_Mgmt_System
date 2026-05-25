@@ -2,6 +2,7 @@ using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
 using ECommerce.Application.UseCases;
 using ECommerce.Applcation.Helpers;
+using ECommerce.Domain.Exceptions;
 
 namespace ECommerce.Application.UseCases;
 
@@ -25,19 +26,19 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
   {
     try
     {
-      var storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken) ?? throw new Exception("Token not found!");
+      var storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken) ??  throw NotFoundException.RefreshToken();
 
       if (storedToken.ExpiresIn < DateTime.UtcNow)
       {
-        throw new Exception("Refresh token has expired! Please login again.");
+        throw new ValidationException("Refresh token has expired! Please login again.");
       }
 
       if (storedToken.IsRevoked)
       {
-        throw new Exception("Refresh token has been revoked! Please login again.");
+        throw new ValidationException("Refresh token has been revoked! Please login again.");
       }
 
-      var user = await _userRepository.GetByIdAsync(storedToken.UserId) ?? throw new Exception("User not found!");
+      var user = await _userRepository.GetByIdAsync(storedToken.UserId) ??  throw NotFoundException.User();
 
       var newAccessToken = _jwtTokenGenerator.GenerateAccessToken(user);
       return newAccessToken;
@@ -45,7 +46,7 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
     }
     catch (Exception ex)
     {
-      _logger.LogInformation(ex, "Failed to retrieve refresh token!");
+      _logger.LogError(ex, "Failed to retrieve refresh token!");
       throw;
     }
   }

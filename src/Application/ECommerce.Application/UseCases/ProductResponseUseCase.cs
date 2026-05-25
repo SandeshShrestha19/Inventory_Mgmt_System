@@ -1,3 +1,4 @@
+using ECommerce.Domain.Exceptions;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
 
@@ -16,7 +17,7 @@ public class ProductResponseUseCase : IProductResponseUseCase
   {
     try
     {
-      var product = await _productRepository.GetByIdAsync(id) ?? throw new Exception("User not found!");
+      var product = await _productRepository.GetByIdAsync(id) ?? throw NotFoundException.Product();
       return ResponseMapper.ToProductResponse(product);
     }
     catch(Exception ex)

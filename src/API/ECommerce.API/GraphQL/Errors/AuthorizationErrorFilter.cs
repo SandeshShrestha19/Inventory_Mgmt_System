@@ -14,6 +14,12 @@ public class AuthorizationErrorFilter : IErrorFilter
             return error.WithMessage("You must be logged in to access this resource.");
         }
 
+        if(error.Exception is BaseException baseException)
+        {
+            return error.WithMessage(baseException.Message)
+                        .WithCode(baseException.ErrorCode);
+        }
+
         return error;
     }
 }

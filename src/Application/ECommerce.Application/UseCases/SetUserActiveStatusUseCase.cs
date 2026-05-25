@@ -1,3 +1,4 @@
+using ECommerce.Domain.Exceptions;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
 
@@ -7,7 +8,7 @@ public class SetUserActiveStatusUseCase : ISetUserActiveStatusUseCase
   private readonly IUnitOfWork _unitOfWork;
   private readonly ILogger<SetUserActiveStatusUseCase> _logger;
 
-  public SetUserActiveStatusUseCase(IUserRepository userRepository, ILogger<SetUserActiveStatusUseCase> logger, IUnitOfWork unitOfWork = null)
+  public SetUserActiveStatusUseCase(IUserRepository userRepository, ILogger<SetUserActiveStatusUseCase> logger, IUnitOfWork unitOfWork)
   {
     _userRepository = userRepository;
     _logger = logger;
@@ -18,7 +19,7 @@ public class SetUserActiveStatusUseCase : ISetUserActiveStatusUseCase
   {
     try
     {
-      var user = await _userRepository.GetByIdAsync(userId) ?? throw new Exception("User not found!");
+      var user = await _userRepository.GetByIdAsync(userId) ?? throw NotFoundException.User();
       user.IsActive = isActive;
       await _userRepository.UpdateAsync(user);
       await _unitOfWork.SaveChangesAsync();

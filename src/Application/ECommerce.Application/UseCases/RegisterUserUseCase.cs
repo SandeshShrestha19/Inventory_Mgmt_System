@@ -1,5 +1,6 @@
 using Ecommerce.Domain.Models;
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.Exceptions;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
 
@@ -20,11 +21,16 @@ public class RegisterUserUseCase : IRegisterUserUseCase
     {
       if (string.IsNullOrWhiteSpace(model.Name))
       {
-        throw new Exception("Name can't be empty!");
+        throw new ValidationException("Name can't be empty!");
       }
       if (!model.Email.Contains('@'))
       {
-        throw new Exception("Email should contain '@'!");
+        throw new ValidationException("Email should contain '@'!");
+      }
+      var existingEmail = await _userRepository.GetByEmail(model.Email);
+      if (existingEmail != null)
+      {
+        throw ConflictException.EmailAlreadyExists();
       }
       var user = new User
       {
@@ -32,14 +38,17 @@ public class RegisterUserUseCase : IRegisterUserUseCase
         Name = model.Name,
         Email = model.Email,
         Role = model.Role,
-        Password = PasswordHashHandler.HashPassword(model.Password)
+        Password = PasswordHashHandler.HashPassword(model.Password),
+        CreatedAt = DateTime.UtcNow,
+        IsActive = true,
+        IsLoggedIn = false
       };
       return await _userRepository.AddAsync(user);
-      
+
     }
-    catch(Exception ex)
+    catch (Exception ex)
     {
-      _logger.LogInformation(ex, "Failed to add user!");
+      _logger.LogError(ex, "Failed to add user!");
       throw;
     }
   }
