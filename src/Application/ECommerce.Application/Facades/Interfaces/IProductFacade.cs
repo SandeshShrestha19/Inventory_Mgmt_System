@@ -8,4 +8,6 @@ public interface IProductFacade
   Task<Product> AddAsync(AddProductModel addModel);
   Task UpdateAsync(Guid id, UpdateProductModel udpateModel);
   Task<bool> DeleteAsync(Guid id);
+  Task IncreaseStockAsync(Guid id, int increasingQuantity);
+  Task DecreaseStockAsync(Guid id, int decreasingQuantity);
 }

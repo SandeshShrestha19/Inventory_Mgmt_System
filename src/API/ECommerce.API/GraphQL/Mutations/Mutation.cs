@@ -5,6 +5,7 @@ using Ecommerce.Domain.Models;
 using HotChocolate.Authorization;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using ECommerce.Domain.UseCase;
 
 namespace ECommerce.API.GraphQL.Mutations;
 
@@ -42,6 +43,20 @@ public class Mutation
     Guid id) =>
     await productFacade.DeleteAsync(id);
 
+    [Authorize(Roles = ["Admin", "Manager"])]
+    public async Task<bool> IncreaseProductStock([Service] IProductFacade productFacade, Guid id, int increasingQuantity)
+    {
+        await productFacade.IncreaseStockAsync(id, increasingQuantity);
+        return true;
+    }
+
+    [Authorize(Roles = ["Admin", "Manager"])]
+    public async Task<bool> DecreaseProductStock([Service] IProductFacade productFacade, Guid id, int decreasingQuantity)
+    {
+        await productFacade.DecreaseStockAsync(id, decreasingQuantity);
+        return true;
+    }
+
     public async Task<User> RegisterUser([Service] IUserFacade userFacade, UserInput userInput)
     {
         return await userFacade.AddAsync(new AddUserModel
@@ -52,6 +67,8 @@ public class Mutation
             Password = userInput.Password
         });
     }
+
+
     [Authorize]
     public async Task<bool> DeleteUser([Service] IUserFacade userFacade, Guid id)
     {
@@ -124,21 +141,26 @@ public class Mutation
             Password = password
         });
 
-        httpContextAccessor.HttpContext!.Response.Cookies.Append("token", result.AccessToken, new CookieOptions
+        if (!result.RequiresTwoFactor)
         {
-            HttpOnly = true,
-            Secure = false,
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddMinutes(7)
-        });
+            httpContextAccessor.HttpContext!.Response.Cookies.Append(
+                "token", result.AccessToken!, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = false,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(7)
+                });
 
-        httpContextAccessor.HttpContext!.Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddDays(7)
-        });
+            httpContextAccessor.HttpContext!.Response.Cookies.Append(
+                "refreshToken", result.RefreshToken!, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = false,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTimeOffset.UtcNow.AddDays(7)
+                });
+        }
 
         return result;
     }
@@ -160,7 +182,7 @@ public class Mutation
 
         var refreshToken = httpContextAccessor.HttpContext!.Request.Cookies["refreshToken"] ?? throw new Exception("Refresh token not found!"); //request for refresh token from cookie
 
-        await logoutUseCase.ExecuteAsync(Guid.Parse(userId!), refreshToken, jti, tokenExpiry);
+        await logoutUseCase.ExecuteAsync(Guid.Parse(userId!), refreshToken, jti!, tokenExpiry);
 
         httpContextAccessor.HttpContext.Response.Cookies.Delete("token");
         httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
@@ -188,6 +210,85 @@ public class Mutation
     public async Task<bool> SetUserActiveStatus([Service] ISetUserActiveStatusUseCase setUserActiveStatusUseCase, Guid userId, bool isActive)
     {
         await setUserActiveStatusUseCase.ExecuteAsync(userId, isActive);
+        return true;
+    }
+
+    // Setup 2FA
+    [Authorize]
+    public async Task<Enable2FAResponseModel> Setup2FA(
+        [Service] IEnable2FAUseCase enable2FAUseCase,
+        [Service] IHttpContextAccessor httpContextAccessor)
+    {
+        var userId = httpContextAccessor.HttpContext!.User
+            .FindFirst(ClaimTypes.NameIdentifier)?.Value
+            ?? throw new Exception("User not found!");
+
+        return await enable2FAUseCase.ExecuteAsync(Guid.Parse(userId));
+    }
+
+    // Verify and enable 2FA
+    [Authorize]
+    public async Task<bool> Verify2FA(
+        [Service] IVerify2FAUseCase verify2FAUseCase,
+        [Service] IHttpContextAccessor httpContextAccessor,
+        string code)
+    {
+        var userId = httpContextAccessor.HttpContext!.User
+            .FindFirst(ClaimTypes.NameIdentifier)?.Value
+            ?? throw new Exception("User not found!");
+
+        return await verify2FAUseCase.ExecuteAsync(Guid.Parse(userId), code);
+    }
+
+    [AllowAnonymous]
+    public async Task<LoginResponseModel> LoginWith2FA(
+        [Service] ILoginWith2FAUseCase loginWith2FAUseCase,
+        [Service] IHttpContextAccessor httpContextAccessor,
+        string tempToken,
+        string code)
+    {
+        var result = await loginWith2FAUseCase.ExecuteAsync(tempToken, code);
+
+        httpContextAccessor.HttpContext!.Response.Cookies.Append(
+            "token", result.AccessToken!, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(7)
+            });
+
+        httpContextAccessor.HttpContext!.Response.Cookies.Append(
+            "refreshToken", result.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+        return result;
+    }
+
+    // Disable 2FA
+    [Authorize]
+    public async Task<bool> Disable2FA(
+        [Service] IUserRepository userRepository,
+        [Service] IHttpContextAccessor httpContextAccessor,
+        [Service] IUnitOfWork unitOfWork)
+    {
+        var userId = httpContextAccessor.HttpContext!.User
+            .FindFirst(ClaimTypes.NameIdentifier)?.Value
+            ?? throw new Exception("User not found!");
+
+        var user = await userRepository.GetByIdAsync(Guid.Parse(userId))
+            ?? throw new Exception("User not found!");
+
+        user.TwoFactorEnabled = false;
+        user.TwoFactorSecret = null;
+        await userRepository.UpdateAsync(user);
+        await unitOfWork.SaveChangesAsync();
+
         return true;
     }
 }

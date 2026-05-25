@@ -2,8 +2,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens.Experimental;
 
 namespace ECommerce.Applcation.Helpers;
 
@@ -50,6 +52,66 @@ public class JwtTokenGenerator
     var securityToken = tokenHandler.CreateToken(tokenDescriptor);
     var token = tokenHandler.WriteToken(securityToken);
     return token;
+  }
+
+  public string GenerateTempToken(User user)
+  {
+    var issuer = _configuration["JwtConfig:Issuer"];
+    var audience = _configuration["JwtConfig:Audience"];
+    var key = _configuration["JwtConfig:Key"];
+    var tokenDescriptor = new SecurityTokenDescriptor
+    {
+      Subject = new ClaimsIdentity(new[]
+      {
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+        new Claim("2fa_pending", "true"),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+      }),
+      Issuer = issuer,
+      Audience = audience,
+      Expires = DateTime.UtcNow.AddMinutes(5),
+      SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key!)), SecurityAlgorithms.HmacSha512Signature)
+    };
+    var tokenHandler = new JwtSecurityTokenHandler();
+    var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+    var token = tokenHandler.WriteToken(securityToken);
+    return token;
+  }
+
+  public Guid ValidateTempToken(string tempToken)
+  {
+    var issuer = _configuration["JwtConfig:Issuer"];
+    var audience = _configuration["JwtConfig:Audience"];
+    var key = _configuration["JwtConfig:Key"];
+
+    var tokenHandler = new JwtSecurityTokenHandler();
+    try
+    {
+      var principal = tokenHandler.ValidateToken(tempToken,
+        new TokenValidationParameters
+        {
+          ValidateIssuer = true,
+          ValidateAudience = true,
+          ValidateLifetime = true,
+          ValidateIssuerSigningKey = true,
+          ValidIssuer = issuer,
+          ValidAudience = audience,
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key!))
+        }, out _);
+      var is2FAPending = principal.FindFirst("2fa_pending")?.Value;
+
+      if (is2FAPending != "true")
+      {
+        throw new UnauthorizedException("Invalid temporary token!");
+      }
+
+      var userId = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      return Guid.Parse(userId!);
+    }
+    catch
+    {
+      throw new UnauthorizedException("Invalid or expired temporary token!");
+    }
   }
 }
 

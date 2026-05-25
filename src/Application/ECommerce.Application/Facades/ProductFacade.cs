@@ -9,18 +9,28 @@ public class ProductFacade : IProductFacade
   private readonly IAddProductUseCase _addProductUseCase;
   private readonly IUpdateProductUseCase _updateProductUseCase;
   private readonly IDeleteProductUseCase _deleteProductUseCase;
-  public ProductFacade(IGetProductQueryUseCase getProductUseCase, IProductResponseUseCase getProductByIdUseCase, IAddProductUseCase addProductUseCase, IUpdateProductUseCase udpateProductUseCase, IDeleteProductUseCase deleteProductUseCase)
+  private readonly IIncreaseProductStockUseCase _increaseProductStockUseCase;
+  private readonly IDecreaseProductStockUseCase _decreaseProductStockUseCase;
+
+  public ProductFacade(IGetProductQueryUseCase getProductUseCase, IProductResponseUseCase getProductByIdUseCase, IAddProductUseCase addProductUseCase, IUpdateProductUseCase udpateProductUseCase, IDeleteProductUseCase deleteProductUseCase, IDecreaseProductStockUseCase decreaseProductUseCase, IIncreaseProductStockUseCase increaseProductUseCase)
   {
     _getProductUseCase = getProductUseCase;
     _getProductByIdUseCase = getProductByIdUseCase;
     _addProductUseCase = addProductUseCase;
     _updateProductUseCase = udpateProductUseCase;
     _deleteProductUseCase = deleteProductUseCase;
+    _decreaseProductStockUseCase = decreaseProductUseCase;
+    _increaseProductStockUseCase = increaseProductUseCase;
   }
 
   public async Task<Product> AddAsync(AddProductModel addModel)
   {
     return await _addProductUseCase.ExecuteAsync(addModel);
+  }
+
+  public async Task DecreaseStockAsync(Guid id, int decreasingQuantity)
+  {
+    await _decreaseProductStockUseCase.DecreaseProductStockAsync(id, decreasingQuantity);
   }
 
   public async Task<bool> DeleteAsync(Guid id)
@@ -38,8 +48,14 @@ public class ProductFacade : IProductFacade
     return await _getProductByIdUseCase.GetByIdAsync(id);
   }
 
+  public async Task IncreaseStockAsync(Guid id, int increasingQuantity)
+  {
+    await _increaseProductStockUseCase.IncreaseProductStockAsync(id, increasingQuantity);
+  }
+
   public async Task UpdateAsync(Guid id, UpdateProductModel updateModel)
   {
     await _updateProductUseCase.ExecuteAsync(id, updateModel);
   }
+  
 }

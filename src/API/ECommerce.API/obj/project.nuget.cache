@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "TCzi/Nz0uwY=",
+  "dgSpecHash": "14odsBOvai8=",
   "success": true,
   "projectFilePath": "C:\\Users\\sande\\Desktop\\.net-vscode\\Practise\\src\\API\\ECommerce.API\\ECommerce.API.csproj",
   "expectedPackageFiles": [
@@ -93,9 +93,12 @@
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.identitymodel.protocols\\7.1.2\\microsoft.identitymodel.protocols.7.1.2.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.identitymodel.protocols.openidconnect\\7.1.2\\microsoft.identitymodel.protocols.openidconnect.7.1.2.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.identitymodel.tokens\\8.18.0\\microsoft.identitymodel.tokens.8.18.0.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\npgsql\\8.0.6\\npgsql.8.0.6.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\8.0.11\\npgsql.entityframeworkcore.postgresql.8.0.11.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\otp.net\\1.4.1\\otp.net.1.4.1.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\qrcoder\\1.8.0\\qrcoder.1.8.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\system.codedom\\4.4.0\\system.codedom.4.4.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\system.collections.immutable\\6.0.0\\system.collections.immutable.6.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\system.composition\\6.0.0\\system.composition.6.0.0.nupkg.sha512",
@@ -105,6 +108,7 @@
     "C:\\Users\\sande\\.nuget\\packages\\system.composition.runtime\\6.0.0\\system.composition.runtime.6.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\system.composition.typedparts\\6.0.0\\system.composition.typedparts.6.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\system.diagnostics.diagnosticsource\\10.0.7\\system.diagnostics.diagnosticsource.10.0.7.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\system.identitymodel.tokens.jwt\\8.18.0\\system.identitymodel.tokens.jwt.8.18.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\system.io.hashing\\8.0.0\\system.io.hashing.8.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\system.io.pipelines\\8.0.0\\system.io.pipelines.8.0.0.nupkg.sha512",

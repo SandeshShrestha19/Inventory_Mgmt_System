@@ -2,6 +2,6 @@ public record UpdateProductInput
 (
    string? Name,
    string? Description,
-   int? Stock,
-  decimal? Price
+   int Stock,
+   decimal? Price
 );

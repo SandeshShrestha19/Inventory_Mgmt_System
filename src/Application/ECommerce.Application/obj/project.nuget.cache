@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "6inNoTB9e0s=",
+  "dgSpecHash": "Yz3Dov7rCcM=",
   "success": true,
   "projectFilePath": "C:\\Users\\sande\\Desktop\\.net-vscode\\Practise\\src\\Application\\ECommerce.Application\\ECommerce.Application.csproj",
   "expectedPackageFiles": [
@@ -53,7 +53,11 @@
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.18.0\\microsoft.identitymodel.jsonwebtokens.8.18.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.identitymodel.logging\\8.18.0\\microsoft.identitymodel.logging.8.18.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\microsoft.identitymodel.tokens\\8.18.0\\microsoft.identitymodel.tokens.8.18.0.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\otp.net\\1.4.1\\otp.net.1.4.1.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\qrcoder\\1.8.0\\qrcoder.1.8.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\system.diagnostics.diagnosticsource\\10.0.7\\system.diagnostics.diagnosticsource.10.0.7.nupkg.sha512",
+    "C:\\Users\\sande\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\system.identitymodel.tokens.jwt\\8.18.0\\system.identitymodel.tokens.jwt.8.18.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\system.io.pipelines\\8.0.0\\system.io.pipelines.8.0.0.nupkg.sha512",
     "C:\\Users\\sande\\.nuget\\packages\\system.memory\\4.6.3\\system.memory.4.6.3.nupkg.sha512"

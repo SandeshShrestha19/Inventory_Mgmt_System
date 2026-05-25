@@ -8,7 +8,7 @@ public class SetUserActiveStatusUseCase : ISetUserActiveStatusUseCase
   private readonly IUnitOfWork _unitOfWork;
   private readonly ILogger<SetUserActiveStatusUseCase> _logger;
 
-  public SetUserActiveStatusUseCase(IUserRepository userRepository, ILogger<SetUserActiveStatusUseCase> logger, IUnitOfWork unitOfWork = null)
+  public SetUserActiveStatusUseCase(IUserRepository userRepository, ILogger<SetUserActiveStatusUseCase> logger, IUnitOfWork unitOfWork)
   {
     _userRepository = userRepository;
     _logger = logger;

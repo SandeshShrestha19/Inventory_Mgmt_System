@@ -1,7 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 using ECommerce.Applcation.Helpers;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Exceptions;
@@ -9,7 +7,6 @@ using ECommerce.Domain.Models;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerce.Application.UseCases;
 
@@ -19,13 +16,11 @@ public class LoginUseCase : ILoginUseCase
   private readonly JwtTokenGenerator _jwtTokenGenerator;
   private readonly IRefreshTokenRepository _refreshTokenRepository;
   private readonly IUnitOfWork _unitOfWork;
-  private readonly IConfiguration _configuration;
   private readonly ILogger<LoginUseCase> _logger;
 
-  public LoginUseCase(IUserRepository userRepository, IUnitOfWork unitOfWork, IConfiguration configuration, ILogger<LoginUseCase> logger, IRefreshTokenRepository refreshTokenRepository, JwtTokenGenerator jwtTokenGenerator)
+  public LoginUseCase(IUserRepository userRepository, IUnitOfWork unitOfWork, ILogger<LoginUseCase> logger, IRefreshTokenRepository refreshTokenRepository, JwtTokenGenerator jwtTokenGenerator)
   {
     _userRepository = userRepository;
-    _configuration = configuration;
     _logger = logger;
     _unitOfWork = unitOfWork;
     _refreshTokenRepository = refreshTokenRepository;
@@ -49,9 +44,20 @@ public class LoginUseCase : ILoginUseCase
       {
         throw new UnauthorizedException();
       }
-      if(!user.IsActive)
+      if (!user.IsActive)
       {
         throw BusinessException.AccountDisabled();
+      }
+
+      var tempToken = _jwtTokenGenerator.GenerateTempToken(user);
+      if (user.TwoFactorEnabled)
+      {
+        return new LoginResponseModel
+        {
+          RequiresTwoFactor = true,
+          Email = model.Email,
+          TempToken = tempToken
+        };
       }
 
       var token = _jwtTokenGenerator.GenerateAccessToken(user);
@@ -73,12 +79,14 @@ public class LoginUseCase : ILoginUseCase
 
       return new LoginResponseModel
       {
+        RequiresTwoFactor = false,
         Email = model.Email,
         ExpiresIn = 7,
         AccessToken = token,
         Message = "Login Successful!",
         RefreshToken = refreshToken.Token
       };
+
     }
     catch (Exception ex)
     {
