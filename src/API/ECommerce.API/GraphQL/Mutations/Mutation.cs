@@ -331,4 +331,25 @@ public class Mutation
         });
         return true;
     }
+
+    [Authorize(Roles = ["Admin"])]
+    public async Task<string> GenerateProductDescription(
+    [Service] IGeminiFacade geminiFacade,
+    string productName,
+    string categoryName)
+    {
+        var prompt = $"""
+        Generate a concise e-commerce product description.
+
+        Product: {productName}
+        Category: {categoryName}
+
+        Requirements:
+        - 2 to 3 sentences
+        - Professional tone
+        - No exaggerated claims
+        """;
+
+        return await geminiFacade.GenerateTextAsync(prompt);
+    }
 }

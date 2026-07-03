@@ -38,12 +38,14 @@ public class ProductFacade : IProductFacade
 
       var product = new Product
       {
-        Id = Guid.NewGuid(),
+        Id = Guid.CreateVersion7(),
         Name = model.Name,
         Description = model.Description,
         Price = model.Price,
         Stock = model.Stock,
-        CategoryId = model.CategoryId
+        CategoryId = model.CategoryId,
+        CreatedAt = DateTimeOffset.UtcNow,
+        ModifiedAt = DateTimeOffset.UtcNow
       };
 
       return await _productRepository.AddAsync(product);

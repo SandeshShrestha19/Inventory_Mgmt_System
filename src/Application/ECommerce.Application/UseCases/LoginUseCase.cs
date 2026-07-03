@@ -66,7 +66,7 @@ public class LoginUseCase : ILoginUseCase
 
       var refreshToken = new RefreshToken
       {
-        Id = Guid.NewGuid(),
+        Id = Guid.CreateVersion7(),
         Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
         UserId = user.Id,
         ExpiresIn = DateTime.UtcNow.AddDays(7),

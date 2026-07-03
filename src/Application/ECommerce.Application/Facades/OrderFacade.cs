@@ -43,7 +43,7 @@ public class OrderFacade : IOrderFacade
 
         orderItems.Add(new OrderItem
         {
-          Id = Guid.NewGuid(),
+          Id = Guid.CreateVersion7(),
           ProductId = product.Id,
           Quantity = item.Quantity,
           UnitPrice = product.Price
@@ -54,7 +54,7 @@ public class OrderFacade : IOrderFacade
 
       var order = new Order
       {
-        Id = Guid.NewGuid(),
+        Id = Guid.CreateVersion7(),
         UserId = model.UserId,
         OrderItems = orderItems,
         TotalPrice = totalPrice
@@ -134,7 +134,7 @@ public class OrderFacade : IOrderFacade
 
           order.OrderItems.Add(new OrderItem
           {
-            Id = Guid.NewGuid(),
+            Id = Guid.CreateVersion7(),
             OrderId = order.Id,
             ProductId = product.Id,
             Quantity = item.Quantity,

@@ -25,6 +25,7 @@ public static class DependencyInjection
     services.AddScoped<IProductFacade, ProductFacade>();
     services.AddScoped<IOrderFacade, OrderFacade>();
     services.AddScoped<ICategoryFacade, CategoryFacade>();
+    services.AddHttpClient<IGeminiFacade, GeminiFacade>();
 
     return services;
   }

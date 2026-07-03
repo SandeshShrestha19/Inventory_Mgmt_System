@@ -42,7 +42,7 @@ public class UserFacade : IUserFacade
       }
       var user = new User
       {
-        Id = Guid.NewGuid(),
+        Id = Guid.CreateVersion7(),
         Name = model.Name,
         Email = model.Email,
         Role = "User",

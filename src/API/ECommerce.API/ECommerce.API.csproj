@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
     <ProjectReference Include="..\..\Application\ECommerce.Application\ECommerce.Application.csproj" />
@@ -21,6 +21,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>13a40d5e-64d7-410d-95cd-cf8717b146b4</UserSecretsId>
   </PropertyGroup>
 
 </Project>

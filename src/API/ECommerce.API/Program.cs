@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using ECommerce.Domain.Ports;
 using OtpNet;
 using QRCoder;
+using ECommerce.Domain.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.AddScoped<ResponseMapper>();
 builder.Services.AddGraphQLDependencies();
 builder.Services.AddCorsDependencies(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<GeminiOptionsModel>(
+    builder.Configuration.GetSection("Gemini"));
 
 var app = builder.Build();
 
@@ -96,9 +99,9 @@ app.MapPost("otp/validate", (ValidateOtpRequest request) =>
     var totp = new Totp(secretKey);
     var isValid = totp.VerifyTotp(request.Code, out var timeStepMatched, VerificationWindow.RfcSpecifiedNetworkDelay);
 
-    return Results.Ok(new {isValid});
+    return Results.Ok(new { isValid });
 });
-    
+
 
 
 app.Run();

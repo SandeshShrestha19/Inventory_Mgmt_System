@@ -2,7 +2,7 @@ using ECommerce.Domain.Exceptions;
 using ECommerce.Domain.Ports;
 using Microsoft.Extensions.Logging;
 
-public class LogoutUseCase: ILogoutUseCase
+public class LogoutUseCase : ILogoutUseCase
 {
   private readonly IUserRepository _userRepository;
   private readonly IRefreshTokenRepository _refreshTokenRepository;
@@ -35,15 +35,16 @@ public class LogoutUseCase: ILogoutUseCase
 
       await _blacklistedTokenRepository.AddAsync(new BlacklistedToken
       {
-        Id = Guid.NewGuid(),
+        Id = Guid.CreateVersion7(),
         Jti = jti,
         ExpiresAt = expiresAt,
         CreatedAt = DateTime.UtcNow
       });
-      
+
       await _unitOfWork.SaveChangesAsync();
 
-    }catch(Exception ex)
+    }
+    catch (Exception ex)
     {
       _logger.LogInformation(ex, "Failed to log out!");
     }

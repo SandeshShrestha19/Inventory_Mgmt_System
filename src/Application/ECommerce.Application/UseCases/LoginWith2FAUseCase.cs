@@ -49,7 +49,7 @@ public class LoginWith2FAUseCase : ILoginWith2FAUseCase
 
       var refreshToken = new RefreshToken
       {
-        Id = Guid.NewGuid(),
+        Id = Guid.CreateVersion7(),
         Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
         UserId = user.Id,
         CreatedAt = DateTime.UtcNow,
@@ -71,7 +71,7 @@ public class LoginWith2FAUseCase : ILoginWith2FAUseCase
         Message = "Login successful!"
       };
     }
-    catch(Exception ex)
+    catch (Exception ex)
     {
       _logger.LogError(ex, "Failed to login!");
       throw;
