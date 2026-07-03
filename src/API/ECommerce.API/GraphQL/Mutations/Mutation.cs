@@ -21,7 +21,8 @@ public class Mutation
             Name = productInput.Name,
             Description = productInput.Description,
             Price = productInput.Price,
-            Stock = productInput.Stock
+            Stock = productInput.Stock,
+            CategoryId = productInput.CategoryId
         });
 
     [Authorize(Roles = ["Admin"])]
@@ -32,25 +33,26 @@ public class Mutation
             Name = udpateProductInput.Name,
             Description = udpateProductInput.Description,
             Price = udpateProductInput.Price,
-            Stock = udpateProductInput.Stock
+            Stock = udpateProductInput.Stock,
+            CategoryId = udpateProductInput.CategoryId
         });
         return true;
     }
 
-    [Authorize(Roles = ["Admin", "Mananger"])]
+    [Authorize(Roles = ["Admin"])]
     public async Task<bool> DeleteProduct(
     [Service] IProductFacade productFacade,
     Guid id) =>
     await productFacade.DeleteAsync(id);
 
-    [Authorize(Roles = ["Admin", "Manager"])]
+    [Authorize(Roles = ["Admin"])]
     public async Task<bool> IncreaseProductStock([Service] IProductFacade productFacade, Guid id, int increasingQuantity)
     {
         await productFacade.IncreaseStockAsync(id, increasingQuantity);
         return true;
     }
 
-    [Authorize(Roles = ["Admin", "Manager"])]
+    [Authorize(Roles = ["Admin"])]
     public async Task<bool> DecreaseProductStock([Service] IProductFacade productFacade, Guid id, int decreasingQuantity)
     {
         await productFacade.DecreaseStockAsync(id, decreasingQuantity);
@@ -63,7 +65,6 @@ public class Mutation
         {
             Name = userInput.Name,
             Email = userInput.Email,
-            Role = userInput.Role,
             Password = userInput.Password
         });
     }
@@ -190,19 +191,32 @@ public class Mutation
         return true;
     }
 
-    public async Task<string> RefreshToken([Service] IRefreshTokenUseCase refreshTokenUseCase, [Service] IHttpContextAccessor httpContextAccessor, string? refToken = null)
+    [AllowAnonymous]
+    public async Task<string> RefreshToken(
+    [Service] IRefreshTokenUseCase refreshTokenUseCase,
+    [Service] IHttpContextAccessor httpContextAccessor,
+    string? refToken = null)
     {
-        var refreshToken = httpContextAccessor.HttpContext!.Request.Cookies["refreshToken"] ?? refToken ?? throw new Exception("Refresh token not found!");
+        var httpContext = httpContextAccessor.HttpContext
+            ?? throw new Exception("HttpContext not available.");
+
+        var refreshToken = httpContext.Request.Cookies["refreshToken"]
+            ?? refToken
+            ?? throw new Exception("Refresh token not found!");
 
         var newAccessToken = await refreshTokenUseCase.ExecuteAsync(refreshToken);
 
-        httpContextAccessor.HttpContext!.Response.Cookies.Append("refreshToken", newAccessToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = false,
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddMinutes(7)
-        });
+        httpContext.Response.Cookies.Append(
+            "token",
+            newAccessToken,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(7)
+            });
+
         return newAccessToken;
     }
 
@@ -289,6 +303,32 @@ public class Mutation
         await userRepository.UpdateAsync(user);
         await unitOfWork.SaveChangesAsync();
 
+        return true;
+    }
+
+    public async Task<Category> AddCategory([Service] ICategoryFacade categoryFacade, CategoryInput categoryInput)
+    {
+        return await categoryFacade.AddAsync(new AddCategoryModel
+        {
+            Name = categoryInput.Name
+        });
+    }
+
+
+    [Authorize]
+    public async Task<bool> DeleteCategory([Service] ICategoryFacade categoryFacade, Guid id)
+    {
+        return await categoryFacade.DeleteAsync(id);
+    }
+
+    [Authorize]
+    public async Task<bool> UpdateCategory([Service] ICategoryFacade categoryFacade, Guid id, UpdateCategoryInput updateCategoryInput)
+    {
+        await categoryFacade.UpdateAsync(id, new UpdateCategoryModel
+        {
+            Name = updateCategoryInput.Name,
+            ProductIds = updateCategoryInput.ProductIds
+        });
         return true;
     }
 }

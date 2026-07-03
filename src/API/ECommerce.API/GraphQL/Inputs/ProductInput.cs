@@ -3,5 +3,6 @@ public record ProductInput
    string Name,
    string Description,
    int Stock,
-  decimal Price
+   decimal Price,
+   Guid CategoryId
 );

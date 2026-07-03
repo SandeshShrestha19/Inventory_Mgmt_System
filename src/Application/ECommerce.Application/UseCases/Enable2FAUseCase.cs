@@ -1,6 +1,7 @@
 using ECommerce.Domain.Ports;
 
 namespace ECommerce.Application.UseCase;
+
 public class Enable2FAUseCase : IEnable2FAUseCase
 {
   private readonly IUserRepository _userRepository;

@@ -11,10 +11,11 @@ public class ResponseMapper
       Stock = product.Stock,
       Price = product.Price,
       CreatedAt = product.CreatedAt,
-      Description = product.Description
+      Description = product.Description,
+      CategoryId = product.CategoryId
     };
   }
-  
+
   public static UserResponseModel ToUserResponse(User user)
   {
     return new UserResponseModel
@@ -37,6 +38,17 @@ public class ResponseMapper
       TotalPrice = order.TotalPrice,
       OrderItems = order.OrderItems,
       OrderDate = order.OrderDate
+    };
+  }
+
+  public static CategoryResponseModel ToCategoryResponse(Category category)
+  {
+    return new CategoryResponseModel
+    {
+      Id = category.Id,
+      Name = category.Name,
+      Products = category.Products,
+      CreatedAt = category.CreatedAt
     };
   }
 }

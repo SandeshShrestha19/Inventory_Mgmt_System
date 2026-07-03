@@ -2,12 +2,12 @@ using ECommerce.Domain.Entities;
 
 public class UserResponseModel
 {
-  public Guid Id {get; set;}
-  public string Name {get; set;}
-  public string Email {get; set;}
-  public bool IsLoggedIn {get; set;}
-  public bool IsActive {get; set;}
-  public string Role {get; set;}
-  public DateTime CreatedAt {get; set;}
-  public ICollection<Order> Orders {get; set;} = new List<Order>();
+  public Guid Id { get; set; }
+  public string? Name { get; set; }
+  public string? Email { get; set; }
+  public bool IsLoggedIn { get; set; }
+  public bool IsActive { get; set; }
+  public string? Role { get; set; }
+  public DateTime CreatedAt { get; set; }
+  public ICollection<Order> Orders { get; set; } = new List<Order>();
 }

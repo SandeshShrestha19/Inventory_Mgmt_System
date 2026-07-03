@@ -13,7 +13,7 @@ public class Query
         productFacade.GetAll(paginationInput.CursorId, paginationInput.PageSize);
 
     public async Task<ProductResponseModel?> GetProductById([Service] IProductFacade productFacade, Guid id) =>
-        await productFacade.GetByIdAsync(id);  
+        await productFacade.GetByIdAsync(id);
 
     [UseProjection]
     [UseFiltering]
@@ -36,4 +36,15 @@ public class Query
     [Authorize(Roles = ["Admin"])]
     public async Task<UserResponseModel> GetUserById([Service] IUserFacade userFacade, Guid id) =>
         await userFacade.GetByIdAsync(id);
+
+    [UseProjection]
+    [UseFiltering]
+    [UseSorting]
+    [Authorize(Policy = "ActiveUser")]
+    public IQueryable<CategoryResponseModel> GetCategories([Service] ICategoryFacade categoryFacade, PaginationInput paginationInput) =>
+        categoryFacade.GetAll(paginationInput.CursorId, paginationInput.PageSize);
+
+    [Authorize(Policy = "ActiveUser")]
+    public async Task<CategoryResponseModel> GetUserById([Service] ICategoryFacade categoryFacade, Guid id) =>
+        await categoryFacade.GetByIdAsync(id);
 }

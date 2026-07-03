@@ -37,17 +37,19 @@ public class UserAdapter : IUserRepository
           .AsQueryable();
   }
 
-  public async Task<User> GetByEmail(string email)
+  public async Task<User?> GetByEmailAsync(string email)
   {
-    return await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+    return await _dbContext.Users
+        .AsNoTracking()
+        .SingleOrDefaultAsync(u => u.Email == email);
   }
 
-  public async Task<User?> GetByIdAsync(Guid id)
+  public async Task<User> GetByIdAsync(Guid id)
   {
     return await _dbContext.Users
         .Include(u => u.Orders)
         .ThenInclude(o => o.OrderItems)
-        .FirstOrDefaultAsync(u => u.Id == id);
+        .FirstOrDefaultAsync(u => u.Id == id) ?? throw new Exception("User not found!");
   }
 
   public async Task UpdateAsync(User user)

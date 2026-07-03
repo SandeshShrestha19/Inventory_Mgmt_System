@@ -10,9 +10,10 @@ public class AppDbContext : DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Order> Orders { get; set; }
-    public DbSet<BlacklistedToken> BlacklistedTokens {get; set;}
+    public DbSet<BlacklistedToken> BlacklistedTokens { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,6 +22,9 @@ public class AppDbContext : DbContext
         {
             entity.HasKey(p => p.Id);
             entity.Property(p => p.Price).HasColumnType("decimal(18,2)");
+            entity.HasOne(p => p.Category)
+                  .WithMany(c => c.Products)
+                  .HasForeignKey(p => p.CategoryId);
         });
 
         // User
@@ -56,13 +60,14 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<User>().HasData([
             new User{
-                Id = new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890"), 
+                Id = new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890"),
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 Name = "Administrator",
                 Email = "admin123@gmail.com",
                 Role = "Admin",
                 IsActive = true,
-                Password = "AQAAAAIAAYagAAAAENWUApdzPmQWudXPT/eH43MRNkXC5P5E3Uq5JF4uSxxuCaf2pXJY5EzEFzUtY+VnYA=="
+                Password = "AQAAAAIAAYagAAAAENWUApdzPmQWudXPT/eH43MRNkXC5P5E3Uq5JF4uSxxuCaf2pXJY5EzEFzUtY+VnYA==",
+                TwoFactorEnabled = true
             }
         ]);
 
@@ -77,6 +82,11 @@ public class AppDbContext : DbContext
                   .WithMany()
                   .HasForeignKey(oi => oi.ProductId);
         });
+
+        modelBuilder.Entity<Category>()
+            .HasMany(c => c.Products)
+            .WithOne(p => p.Category)
+            .HasForeignKey(p => p.CategoryId);
     }
 }
 

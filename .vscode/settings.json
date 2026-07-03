@@ -12,5 +12,6 @@
   },
   "chat.tools.edits.autoApprove": {
     "**/*": false
-  }
+  },
+  "editor.fontSize": 11
 }

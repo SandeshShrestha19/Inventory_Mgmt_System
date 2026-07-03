@@ -9,5 +9,5 @@ public interface IProductRepository
     Task<Product> AddAsync(Product product);
     Task UpdateAsync(Product product);
     Task<bool> DeleteAsync(Guid id);
-
+    Task AssignProductsToCategoryAsync(ICollection<Guid> productIds, Guid categoryId);
 }

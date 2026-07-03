@@ -16,8 +16,8 @@ public class ProductAdapter : IProductRepository
 
     public IQueryable<Product> GetAllAsync()
     {
-       return _context.Products.AsQueryable(); 
-    } 
+        return _context.Products.AsQueryable();
+    }
 
     public async Task<Product?> GetByIdAsync(Guid id) =>
         await _context.Products.FindAsync(id);
@@ -44,5 +44,25 @@ public class ProductAdapter : IProductRepository
             await _context.SaveChangesAsync();
         }
         return true;
+    }
+
+    public async Task AssignProductsToCategoryAsync(ICollection<Guid> productIds, Guid categoryId)
+    {
+        var products = await _context.Products
+            .Where(p => productIds.Contains(p.Id))
+            .ToListAsync();
+
+        if (products.Count != productIds.Count)
+        {
+            throw new Exception("One or more product IDs are invalid.");
+        }
+
+        foreach (var product in products)
+        {
+            product.CategoryId = categoryId;
+            product.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+
+        await _context.SaveChangesAsync();
     }
 }

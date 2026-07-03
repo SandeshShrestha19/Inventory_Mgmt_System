@@ -9,11 +9,14 @@ public class Product
   public decimal Price { get; set; }
   public string Description { get; set; } = string.Empty;
   public int Stock { get; set; } = 0;
-  public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+  public Guid CategoryId { get; set; }
+  public Category? Category { get; set; }
+  public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+  public DateTimeOffset ModifiedAt { get; set; }
 
   public void IncreaseStock(int increasingQuantity)
   {
-    if(increasingQuantity <= 0)
+    if (increasingQuantity <= 0)
     {
       throw new BusinessException("Quantity must be greater than 0.");
     }
@@ -21,11 +24,11 @@ public class Product
   }
   public void DecreaseStock(int decreasingQuantity)
   {
-    if(decreasingQuantity <= 0)
+    if (decreasingQuantity <= 0)
     {
       throw new BusinessException("Quantity must be greater than 0.");
     }
-    if(Stock < decreasingQuantity)
+    if (Stock < decreasingQuantity)
     {
       throw new BusinessException("Insufficient stock.");
     }

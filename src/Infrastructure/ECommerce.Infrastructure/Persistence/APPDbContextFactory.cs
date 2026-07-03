@@ -9,8 +9,8 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     public AppDbContext CreateDbContext(string[] args)
     {
         var configuration = new ConfigurationBuilder()
-            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), 
-                "../../API/ECommerce.API")) // ← points to API project for appsettings
+            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(),
+                "../../API/ECommerce.API"))
             .AddJsonFile("appsettings.json")
             .Build();
 
