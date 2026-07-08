@@ -11,7 +11,7 @@ public class BlacklistedTokenUseCase : IBlacklistedTokenUseCase
     _logger = logger;
   }
 
-  public async Task ExecuteAsync(AddBlacklistedTokenModel addModel)
+  public async Task ExecuteAsync(AddBlacklistedTokenModel addModel, CancellationToken cancellationToken = default)
   {
     try
     {
@@ -20,7 +20,7 @@ public class BlacklistedTokenUseCase : IBlacklistedTokenUseCase
         Jti = addModel.Jti,
         ExpiresAt = addModel.ExpiresAt
       };
-      await _blacklistedTokenRepository.AddAsync(jtiToken);
+      await _blacklistedTokenRepository.AddAsync(jtiToken, cancellationToken);
     }
     catch(Exception ex)
     {

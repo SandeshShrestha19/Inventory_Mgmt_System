@@ -21,25 +21,25 @@ public class OrderFacade : IOrderFacade
     _unitOfWork = unitOfWork;
   }
 
-  public async Task<Order> AddAsync(PlaceOrderModel model)
+  public async Task<Order> AddAsync(PlaceOrderModel model, CancellationToken cancellationToken = default)
   {
     try
     {
-      var user = await _userRepository.GetByIdAsync(model.UserId)
+      var user = await _userRepository.GetByIdAsync(model.UserId, cancellationToken)
           ?? throw NotFoundException.User();
 
       var orderItems = new List<OrderItem>();
 
       foreach (var item in model.Items)
       {
-        var product = await _productRepository.GetByIdAsync(item.ProductId)
+        var product = await _productRepository.GetByIdAsync(item.ProductId, cancellationToken)
             ?? throw NotFoundException.Product();
 
         if (product.Stock < item.Quantity)
           throw new ValidationException("Product stock is less than order quantity!");
 
         product.Stock -= item.Quantity;
-        await _productRepository.UpdateAsync(product);
+        await _productRepository.UpdateAsync(product, cancellationToken);
 
         orderItems.Add(new OrderItem
         {
@@ -60,8 +60,8 @@ public class OrderFacade : IOrderFacade
         TotalPrice = totalPrice
       };
 
-      await _orderRepository.AddAsync(order);
-      await _unitOfWork.SaveChangesAsync();
+      await _orderRepository.AddAsync(order, cancellationToken);
+      await _unitOfWork.SaveChangesAsync(cancellationToken);
       _logger.LogInformation("Placing order for user: {UserId}", model.UserId);
       return order;
     }
@@ -72,11 +72,11 @@ public class OrderFacade : IOrderFacade
     }
   }
 
-  public async Task<bool> DeleteAsync(Guid id)
+  public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
   {
     try
     {
-      await _orderRepository.DeleteAsync(id);
+      await _orderRepository.DeleteAsync(id, cancellationToken);
       return true;
     }
     catch (Exception ex)
@@ -87,15 +87,15 @@ public class OrderFacade : IOrderFacade
 
   }
 
-  public async Task UpdateAsync(Guid id, UpdateOrderModel model)
+  public async Task UpdateAsync(Guid id, UpdateOrderModel model, CancellationToken cancellationToken = default)
   {
     try
     {
-      var order = await _orderRepository.GetByIdAsync(id) ?? throw NotFoundException.Order();
+      var order = await _orderRepository.GetByIdAsync(id, cancellationToken) ?? throw NotFoundException.Order();
 
       foreach (var item in model.Items)
       {
-        var product = await _productRepository.GetByIdAsync(item.ProductId) ?? throw NotFoundException.Product();
+        var product = await _productRepository.GetByIdAsync(item.ProductId, cancellationToken) ?? throw NotFoundException.Product();
 
         var existingItem = order.OrderItems
                     .FirstOrDefault(oi => oi.ProductId == item.ProductId);
@@ -105,7 +105,7 @@ public class OrderFacade : IOrderFacade
           if (existingItem != null)
           {
             product.Stock += existingItem.Quantity;
-            await _productRepository.UpdateAsync(product);
+            await _productRepository.UpdateAsync(product, cancellationToken);
             order.OrderItems.Remove(existingItem);
           }
         }
@@ -119,7 +119,7 @@ public class OrderFacade : IOrderFacade
           }
 
           product.Stock -= difference;
-          await _productRepository.UpdateAsync(product);
+          await _productRepository.UpdateAsync(product, cancellationToken);
           existingItem.Quantity = item.Quantity;
         }
         else
@@ -130,7 +130,7 @@ public class OrderFacade : IOrderFacade
           }
 
           product.Stock -= item.Quantity;
-          await _productRepository.UpdateAsync(product);
+          await _productRepository.UpdateAsync(product, cancellationToken);
 
           order.OrderItems.Add(new OrderItem
           {
@@ -144,7 +144,7 @@ public class OrderFacade : IOrderFacade
       }
       order.TotalPrice = order.OrderItems.Sum(oi => oi.UnitPrice * oi.Quantity);
 
-      await _orderRepository.UpdateAsync(order);
+      await _orderRepository.UpdateAsync(order, cancellationToken);
     }
     catch (Exception ex)
     {
@@ -171,11 +171,11 @@ public class OrderFacade : IOrderFacade
     });
   }
 
-  public async Task<OrderResponseModel> GetByIdAsync(Guid id)
+  public async Task<OrderResponseModel> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
   {
     try
     {
-      var order = await _orderRepository.GetByIdAsync(id) ?? throw new ValidationException("User not found!");
+      var order = await _orderRepository.GetByIdAsync(id, cancellationToken) ?? throw new ValidationException("User not found!");
       return ResponseMapper.ToOrderResponse(order);
     }
     catch (Exception ex)

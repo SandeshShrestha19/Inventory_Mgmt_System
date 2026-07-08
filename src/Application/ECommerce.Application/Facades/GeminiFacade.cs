@@ -17,7 +17,7 @@ public class GeminiFacade : IGeminiFacade
     _configuration = configuration;
   }
 
-  public async Task<string> GenerateTextAsync(string prompt)
+  public async Task<string> GenerateTextAsync(string prompt, CancellationToken cancellationToken = default)
   {
     if (string.IsNullOrWhiteSpace(_options.ApiKey))
     {
@@ -41,9 +41,9 @@ public class GeminiFacade : IGeminiFacade
         }
     };
 
-    var response = await _httpClient.PostAsJsonAsync(url, requestBody);
+    var response = await _httpClient.PostAsJsonAsync(url, requestBody, cancellationToken);
 
-    var responseText = await response.Content.ReadAsStringAsync();
+    var responseText = await response.Content.ReadAsStringAsync(cancellationToken);
 
     if (!response.IsSuccessStatusCode)
     {

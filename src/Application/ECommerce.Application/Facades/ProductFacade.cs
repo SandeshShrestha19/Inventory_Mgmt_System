@@ -17,7 +17,7 @@ public class ProductFacade : IProductFacade
     _unitOfWork = unitOfWork;
   }
 
-  public async Task<Product> AddAsync(AddProductModel model)
+  public async Task<Product> AddAsync(AddProductModel model, CancellationToken cancellationToken = default)
   {
     try
     {
@@ -45,10 +45,16 @@ public class ProductFacade : IProductFacade
         Stock = model.Stock,
         CategoryId = model.CategoryId,
         CreatedAt = DateTimeOffset.UtcNow,
-        ModifiedAt = DateTimeOffset.UtcNow
+        ModifiedAt = DateTimeOffset.UtcNow,
+        ProductImages = model.ProductImages
+        .Select(img => new ProductImage
+        {
+          ImageUrl = img.ImageUrl,
+        })
+        .ToList()
       };
 
-      return await _productRepository.AddAsync(product);
+      return await _productRepository.AddAsync(product, cancellationToken);
 
     }
     catch (Exception ex)
@@ -59,11 +65,11 @@ public class ProductFacade : IProductFacade
 
   }
 
-  public async Task<bool> DeleteAsync(Guid id)
+  public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
   {
     try
     {
-      await _productRepository.DeleteAsync(id);
+      await _productRepository.DeleteAsync(id, cancellationToken);
       return true;
     }
     catch (Exception ex)
@@ -90,15 +96,19 @@ public class ProductFacade : IProductFacade
       Price = x.Price,
       Description = x.Description,
       Stock = x.Stock,
-      CategoryId = x.CategoryId
+      CategoryId = x.CategoryId,
+      ProductImages = x.ProductImages.Select(pi => new ProductImage
+      {
+        ImageUrl = pi.ImageUrl
+      }).ToList(),
     });
   }
 
-  public async Task<ProductResponseModel> GetByIdAsync(Guid id)
+  public async Task<ProductResponseModel> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
   {
     try
     {
-      var product = await _productRepository.GetByIdAsync(id) ?? throw NotFoundException.Product();
+      var product = await _productRepository.GetByIdAsync(id, cancellationToken) ?? throw NotFoundException.Product();
       return ResponseMapper.ToProductResponse(product);
     }
     catch (Exception ex)
@@ -108,11 +118,11 @@ public class ProductFacade : IProductFacade
     }
   }
 
-  public async Task UpdateAsync(Guid id, UpdateProductModel updateModel)
+  public async Task UpdateAsync(Guid id, UpdateProductModel updateModel, CancellationToken cancellationToken = default)
   {
     try
     {
-      var product = await _productRepository.GetByIdAsync(id) ?? throw NotFoundException.Product();
+      var product = await _productRepository.GetByIdAsync(id, cancellationToken) ?? throw NotFoundException.Product();
 
       product.Name = updateModel.Name ?? product.Name;
       product.Description = updateModel.Description ?? product.Description;
@@ -123,7 +133,7 @@ public class ProductFacade : IProductFacade
       product.CategoryId = updateModel.CategoryId;
       product.Stock = updateModel.Stock;
 
-      await _productRepository.UpdateAsync(product);
+      await _productRepository.UpdateAsync(product, cancellationToken);
     }
     catch (Exception ex)
     {
@@ -132,20 +142,20 @@ public class ProductFacade : IProductFacade
     }
   }
 
-  public async Task IncreaseStockAsync(Guid productId, int increasingQuantity)
+  public async Task IncreaseStockAsync(Guid productId, int increasingQuantity, CancellationToken cancellationToken = default)
   {
-    var product = await _productRepository.GetByIdAsync(productId);
+    var product = await _productRepository.GetByIdAsync(productId, cancellationToken);
     product!.IncreaseStock(increasingQuantity);
-    await _productRepository.UpdateAsync(product);
-    await _unitOfWork.SaveChangesAsync();
+    await _productRepository.UpdateAsync(product, cancellationToken);
+    await _unitOfWork.SaveChangesAsync(cancellationToken);
   }
 
-  public async Task DecreaseStockAsync(Guid productId, int decreasingQuantity)
+  public async Task DecreaseStockAsync(Guid productId, int decreasingQuantity, CancellationToken cancellationToken = default)
   {
-    var product = await _productRepository.GetByIdAsync(productId);
+    var product = await _productRepository.GetByIdAsync(productId, cancellationToken);
     product!.DecreaseStock(decreasingQuantity);
-    await _productRepository.UpdateAsync(product);
-    await _unitOfWork.SaveChangesAsync();
+    await _productRepository.UpdateAsync(product, cancellationToken);
+    await _unitOfWork.SaveChangesAsync(cancellationToken);
   }
 
 }

@@ -27,7 +27,7 @@ public class LoginUseCase : ILoginUseCase
     _jwtTokenGenerator = jwtTokenGenerator;
   }
 
-  public async Task<LoginResponseModel> ExecuteAsync(LoginModel model)
+  public async Task<LoginResponseModel> ExecuteAsync(LoginModel model, CancellationToken cancellationToken = default)
   {
     try
     {
@@ -73,9 +73,9 @@ public class LoginUseCase : ILoginUseCase
         IsRevoked = false
       };
 
-      await _userRepository.UpdateAsync(user);
-      await _refreshTokenRepository.AddAsync(refreshToken);
-      await _unitOfWork.SaveChangesAsync();
+      await _userRepository.UpdateAsync(user, cancellationToken);
+      await _refreshTokenRepository.AddAsync(refreshToken, cancellationToken);
+      await _unitOfWork.SaveChangesAsync(cancellationToken);
 
       return new LoginResponseModel
       {

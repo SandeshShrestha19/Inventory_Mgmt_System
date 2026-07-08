@@ -102,8 +102,6 @@ app.MapPost("otp/validate", (ValidateOtpRequest request) =>
     return Results.Ok(new { isValid });
 });
 
-
-
 app.Run();
 
 internal record ValidateOtpRequest(string Code);

@@ -1,4 +1,4 @@
 public interface IGeminiFacade
 {
-  Task<string> GenerateTextAsync(string prompt);
+  Task<string> GenerateTextAsync(string prompt, CancellationToken cancellationToken = default);
 }

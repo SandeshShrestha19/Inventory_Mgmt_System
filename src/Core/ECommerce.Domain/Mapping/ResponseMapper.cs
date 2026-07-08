@@ -12,7 +12,8 @@ public class ResponseMapper
       Price = product.Price,
       CreatedAt = product.CreatedAt,
       Description = product.Description,
-      CategoryId = product.CategoryId
+      CategoryId = product.CategoryId,
+      ProductImages = product.ProductImages
     };
   }
 

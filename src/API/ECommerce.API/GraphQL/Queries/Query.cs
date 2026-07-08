@@ -12,8 +12,8 @@ public class Query
     public IQueryable<ProductResponseModel> GetProducts([Service] IProductFacade productFacade, PaginationInput paginationInput) =>
         productFacade.GetAll(paginationInput.CursorId, paginationInput.PageSize);
 
-    public async Task<ProductResponseModel?> GetProductById([Service] IProductFacade productFacade, Guid id) =>
-        await productFacade.GetByIdAsync(id);
+    public async Task<ProductResponseModel?> GetProductById([Service] IProductFacade productFacade, Guid id, CancellationToken cancellationToken) =>
+        await productFacade.GetByIdAsync(id, cancellationToken);
 
     [UseProjection]
     [UseFiltering]
@@ -23,8 +23,8 @@ public class Query
         orderFacade.GetAll(paginationInput.CursorId, paginationInput.PageSize);
 
     [Authorize]
-    public async Task<OrderResponseModel?> GetOrderById([Service] IOrderFacade orderFacade, Guid id) =>
-        await orderFacade.GetByIdAsync(id);
+    public async Task<OrderResponseModel?> GetOrderById([Service] IOrderFacade orderFacade, Guid id, CancellationToken cancellationToken) =>
+        await orderFacade.GetByIdAsync(id, cancellationToken);
 
     [UseProjection]
     [UseFiltering]
@@ -34,8 +34,8 @@ public class Query
         userFacade.GetAll(paginationInput.CursorId, paginationInput.PageSize);
 
     [Authorize(Roles = ["Admin"])]
-    public async Task<UserResponseModel> GetUserById([Service] IUserFacade userFacade, Guid id) =>
-        await userFacade.GetByIdAsync(id);
+    public async Task<UserResponseModel> GetUserById([Service] IUserFacade userFacade, Guid id, CancellationToken cancellationToken) =>
+        await userFacade.GetByIdAsync(id, cancellationToken);
 
     [UseProjection]
     [UseFiltering]
@@ -45,6 +45,6 @@ public class Query
         categoryFacade.GetAll(paginationInput.CursorId, paginationInput.PageSize);
 
     [Authorize(Policy = "ActiveUser")]
-    public async Task<CategoryResponseModel> GetUserById([Service] ICategoryFacade categoryFacade, Guid id) =>
-        await categoryFacade.GetByIdAsync(id);
+    public async Task<CategoryResponseModel> GetUserById([Service] ICategoryFacade categoryFacade, Guid id, CancellationToken cancellationToken) =>
+        await categoryFacade.GetByIdAsync(id, cancellationToken);
 }

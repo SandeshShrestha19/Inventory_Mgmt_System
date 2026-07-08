@@ -17,7 +17,7 @@ public class UserFacade : IUserFacade
     _unitOfWork = unitOfWork;
   }
 
-  public async Task<User> AddAsync(AddUserModel model)
+  public async Task<User> AddAsync(AddUserModel model, CancellationToken cancellationToken = default)
   {
     try
     {
@@ -35,7 +35,7 @@ public class UserFacade : IUserFacade
         throw new ValidationException("Password should be at least 8 characters long!");
       }
 
-      var existingEmail = await _userRepository.GetByEmailAsync(model.Email);
+      var existingEmail = await _userRepository.GetByEmailAsync(model.Email, cancellationToken);
       if (existingEmail != null)
       {
         throw ConflictException.EmailAlreadyExists();
@@ -52,7 +52,7 @@ public class UserFacade : IUserFacade
         IsLoggedIn = false,
         TwoFactorEnabled = true
       };
-      return await _userRepository.AddAsync(user);
+      return await _userRepository.AddAsync(user, cancellationToken);
 
     }
     catch (Exception ex)
@@ -62,11 +62,11 @@ public class UserFacade : IUserFacade
     }
   }
 
-  public async Task<bool> DeleteAsync(Guid id)
+  public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
   {
     try
     {
-      await _userRepository.DeleteAsync(id);
+      await _userRepository.DeleteAsync(id, cancellationToken);
       return true;
     }
     catch (Exception ex)
@@ -98,11 +98,11 @@ public class UserFacade : IUserFacade
     });
   }
 
-  public async Task UpdateAsync(Guid id, UpdateUserModel model)
+  public async Task UpdateAsync(Guid id, UpdateUserModel model, CancellationToken cancellationToken = default)
   {
     try
     {
-      var user = await _userRepository.GetByIdAsync(id)
+      var user = await _userRepository.GetByIdAsync(id, cancellationToken)
           ?? throw NotFoundException.User();
 
       if (!string.IsNullOrWhiteSpace(model.Name))
@@ -125,7 +125,7 @@ public class UserFacade : IUserFacade
         user.Password = PasswordHashHandler.HashPassword(model.Password);
       }
 
-      await _userRepository.UpdateAsync(user);
+      await _userRepository.UpdateAsync(user, cancellationToken);
     }
     catch (Exception ex)
     {
@@ -134,11 +134,11 @@ public class UserFacade : IUserFacade
     }
   }
 
-  public async Task<UserResponseModel> GetByIdAsync(Guid id)
+  public async Task<UserResponseModel> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
   {
     try
     {
-      var user = await _userRepository.GetByIdAsync(id) ?? throw NotFoundException.User();
+      var user = await _userRepository.GetByIdAsync(id, cancellationToken) ?? throw NotFoundException.User();
       return ResponseMapper.ToUserResponse(user);
     }
     catch (Exception ex)

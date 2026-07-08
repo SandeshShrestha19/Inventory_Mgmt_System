@@ -19,19 +19,19 @@ public class LogoutUseCase : ILogoutUseCase
     _blacklistedTokenRepository = blacklistedTokenRepository;
   }
 
-  public async Task ExecuteAsync(Guid id, string refreshToken, string jti, DateTime expiresAt)
+  public async Task ExecuteAsync(Guid id, string refreshToken, string jti, DateTime expiresAt, CancellationToken cancellationToken = default)
   {
     try
     {
-      var user = await _userRepository.GetByIdAsync(id) ?? throw NotFoundException.User();
+      var user = await _userRepository.GetByIdAsync(id, cancellationToken) ?? throw NotFoundException.User();
 
       user.IsLoggedIn = false;
-      await _userRepository.UpdateAsync(user);
+      await _userRepository.UpdateAsync(user, cancellationToken);
 
-      var storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken) ?? throw NotFoundException.RefreshToken();
+      var storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken, cancellationToken) ?? throw NotFoundException.RefreshToken();
 
       storedToken.IsRevoked = true;
-      await _refreshTokenRepository.UpdateASync(storedToken);
+      await _refreshTokenRepository.UpdateASync(storedToken, cancellationToken);
 
       await _blacklistedTokenRepository.AddAsync(new BlacklistedToken
       {
@@ -39,9 +39,9 @@ public class LogoutUseCase : ILogoutUseCase
         Jti = jti,
         ExpiresAt = expiresAt,
         CreatedAt = DateTime.UtcNow
-      });
+      }, cancellationToken);
 
-      await _unitOfWork.SaveChangesAsync();
+      await _unitOfWork.SaveChangesAsync(cancellationToken);
 
     }
     catch (Exception ex)

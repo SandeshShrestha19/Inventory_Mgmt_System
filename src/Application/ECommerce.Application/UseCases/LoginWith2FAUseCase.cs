@@ -27,13 +27,13 @@ public class LoginWith2FAUseCase : ILoginWith2FAUseCase
     _logger = logger;
   }
 
-  public async Task<LoginResponseModel> ExecuteAsync(string tempToken, string code)
+  public async Task<LoginResponseModel> ExecuteAsync(string tempToken, string code, CancellationToken cancellationToken = default)
   {
     try
     {
       var userId = _jwtTokenGenerator.ValidateTempToken(tempToken);
 
-      var user = await _userRepository.GetByIdAsync(userId) ?? throw NotFoundException.User();
+      var user = await _userRepository.GetByIdAsync(userId, cancellationToken) ?? throw NotFoundException.User();
 
       if (string.IsNullOrWhiteSpace(user.TwoFactorSecret))
       {
@@ -57,9 +57,9 @@ public class LoginWith2FAUseCase : ILoginWith2FAUseCase
         IsRevoked = false
       };
       user.IsLoggedIn = true;
-      await _userRepository.UpdateAsync(user);
-      await _refreshTokenRepository.AddAsync(refreshToken);
-      await _unitOfWork.SaveChangesAsync();
+      await _userRepository.UpdateAsync(user, cancellationToken);
+      await _refreshTokenRepository.AddAsync(refreshToken, cancellationToken);
+      await _unitOfWork.SaveChangesAsync(cancellationToken);
 
       return new LoginResponseModel
       {
