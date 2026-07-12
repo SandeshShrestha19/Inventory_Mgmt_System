@@ -64,7 +64,7 @@ public class LoginWith2FAUseCase : ILoginWith2FAUseCase
       return new LoginResponseModel
       {
         RequiresTwoFactor = false,
-        Email = user.Email,
+        EmailOrUsername = (user.Email is not null) ? user.Email : user.Username,
         RefreshToken = refreshToken.Token,
         AccessToken = token,
         ExpiresIn = 7,

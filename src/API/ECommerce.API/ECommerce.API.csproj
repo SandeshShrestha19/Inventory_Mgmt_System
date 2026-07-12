@@ -6,6 +6,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" Version="1.75.0" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="16.0.2" />
     <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="16.0.2" />
     <PackageReference Include="HotChocolate.Data.EntityFramework" Version="16.0.2" />

@@ -75,7 +75,10 @@ public class Mutation
         {
             Name = userInput.Name,
             Email = userInput.Email,
-            Password = userInput.Password
+            Password = userInput.Password,
+            Username = userInput.Username,
+            CompanyName = userInput.CompanyName,
+            PhoneNumber = userInput.PhoneNumber
         }, cancellationToken);
     }
 
@@ -93,8 +96,10 @@ public class Mutation
         {
             Name = updateUserInput.Name,
             Email = updateUserInput.Email,
-            Role = updateUserInput.Role,
-            Password = updateUserInput.Password
+            Password = updateUserInput.Password,
+            CompanyName = updateUserInput.CompanyName,
+            PhoneNumber = updateUserInput.PhoneNumber,
+            Username = updateUserInput.Username
         }, cancellationToken);
         return true;
     }
@@ -142,13 +147,13 @@ public class Mutation
     }
 
     [AllowAnonymous]
-    public async Task<LoginResponseModel> Login([Service] ILoginUseCase loginUseCase, [Service] IHttpContextAccessor httpContextAccessor, string email,
+    public async Task<LoginResponseModel> Login([Service] ILoginUseCase loginUseCase, [Service] IHttpContextAccessor httpContextAccessor, string emailOrUsername,
     string password, CancellationToken cancellationToken)
     {
         var result = await loginUseCase.ExecuteAsync(
             new LoginModel
             {
-                Email = email,
+                EmailOrUsername = emailOrUsername,
                 Password = password
             },
             cancellationToken);
@@ -413,5 +418,31 @@ public class Mutation
         """;
 
         return await geminiFacade.GenerateTextAsync(prompt, cancellationToken);
+    }
+
+    [AllowAnonymous]
+    public async Task<LoginResponseModel> GoogleLogin([Service] IGoogleAuthUseCase googleAuthUseCase, [Service] IHttpContextAccessor httpContextAccessor, string idToken)
+    {
+        var result = await googleAuthUseCase.ExecuteAsync(idToken);
+
+        httpContextAccessor.HttpContext!.Response.Cookies.Append(
+            "token", result.AccessToken!, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(7)
+            });
+
+        httpContextAccessor.HttpContext!.Response.Cookies.Append(
+            "refreshToken", result.RefreshToken!, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+        return result;
     }
 }

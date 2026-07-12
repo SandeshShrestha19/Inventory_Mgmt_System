@@ -31,13 +31,13 @@ public class LoginUseCase : ILoginUseCase
   {
     try
     {
-      if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
+      if (string.IsNullOrWhiteSpace(model.EmailOrUsername) || string.IsNullOrWhiteSpace(model.Password))
       {
         throw new ValidationException("Email or Password field is empty!");
       }
 
-      //verify user by email
-      var user = _userRepository.GetAllAsync().FirstOrDefault(u => u.Email == model.Email) ?? throw new UnauthorizedException();
+      //verify user by email or username
+      var user = _userRepository.GetAllAsync().FirstOrDefault(u => u.Email == model.EmailOrUsername || u.Username == model.EmailOrUsername) ?? throw new UnauthorizedException();
 
       var isValid = PasswordHashHandler.VerifyPassword(model.Password, user.Password);
       if (!isValid)
@@ -55,7 +55,7 @@ public class LoginUseCase : ILoginUseCase
         return new LoginResponseModel
         {
           RequiresTwoFactor = true,
-          Email = model.Email,
+          EmailOrUsername = model.EmailOrUsername,
           TempToken = tempToken
         };
       }
@@ -80,7 +80,7 @@ public class LoginUseCase : ILoginUseCase
       return new LoginResponseModel
       {
         RequiresTwoFactor = false,
-        Email = model.Email,
+        EmailOrUsername = model.EmailOrUsername,
         ExpiresIn = 7,
         AccessToken = token,
         Message = "Login Successful!",

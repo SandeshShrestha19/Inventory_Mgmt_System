@@ -11,6 +11,9 @@ C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net1
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\FluentValidation.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\FluentValidation.AspNetCore.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\Google.Apis.dll
+C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\Google.Apis.Auth.dll
+C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\Google.Apis.Core.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\GreenDonut.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\GreenDonut.Abstractions.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\GreenDonut.Data.dll
@@ -99,6 +102,7 @@ C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net1
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\System.Drawing.Common.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\System.IO.Hashing.dll
+C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\System.Management.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\Yarp.ReverseProxy.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\cs\Microsoft.CodeAnalysis.resources.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\de\Microsoft.CodeAnalysis.resources.dll
@@ -168,6 +172,7 @@ C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net1
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\runtimes\win\lib\net7.0\System.Management.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\ECommerce.Application.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\ECommerce.Domain.dll
 C:\Users\sande\Desktop\.net-vscode\Practise\src\API\ECommerce.API\bin\Debug\net10.0\ECommerce.Infrastructure.dll

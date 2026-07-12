@@ -25,9 +25,20 @@ public class UserFacade : IUserFacade
       {
         throw new ValidationException("Name can't be empty!");
       }
-      if (!model.Email!.Contains('@'))
+
+      if (string.IsNullOrWhiteSpace(model.Username))
+      {
+        throw new ValidationException("Username can't be empty!");
+      }
+
+      if (!model.Email.Contains('@'))
       {
         throw new ValidationException("Email should contain '@'!");
+      }
+
+      if (!model.Password.Contains("@") || !model.Password.Contains("#") || !model.Password.Contains("$") || !model.Password.Contains("!"))
+      {
+        throw new ValidationException("Password should contain at least one special character!");
       }
 
       if (model.Password!.Length < 8)
@@ -44,12 +55,15 @@ public class UserFacade : IUserFacade
       {
         Id = Guid.CreateVersion7(),
         Name = model.Name,
-        Email = model.Email,
+        Email = Convert.ToString(model.Email).ToLower(),
         Role = "User",
         Password = PasswordHashHandler.HashPassword(model.Password!),
         CreatedAt = DateTime.UtcNow,
         IsActive = true,
         IsLoggedIn = false,
+        Username = model.Username,
+        PhoneNumber = model.PhoneNumber ?? string.Empty,
+        CompanyName = model.CompanyName ?? string.Empty,
         TwoFactorEnabled = true
       };
       return await _userRepository.AddAsync(user, cancellationToken);
@@ -94,7 +108,10 @@ public class UserFacade : IUserFacade
       IsLoggedIn = x.IsLoggedIn,
       IsActive = x.IsActive,
       CreatedAt = x.CreatedAt,
-      Orders = x.Orders
+      Orders = x.Orders,
+      PhoneNumber = x.PhoneNumber,
+      Username = x.Username,
+      CompanyName = x.CompanyName
     });
   }
 
@@ -115,9 +132,19 @@ public class UserFacade : IUserFacade
         user.Email = model.Email;
       }
 
-      if (!string.IsNullOrWhiteSpace(model.Role))
+      if (!string.IsNullOrWhiteSpace(model.Username))
       {
-        user.Role = model.Role;
+        user.Username = model.Username;
+      }
+
+      if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
+      {
+        user.PhoneNumber = model.PhoneNumber;
+      }
+
+      if (!string.IsNullOrWhiteSpace(model.CompanyName))
+      {
+        user.CompanyName = model.CompanyName;
       }
 
       if (!string.IsNullOrWhiteSpace(model.Password))
