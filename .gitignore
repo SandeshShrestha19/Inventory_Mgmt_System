@@ -146,6 +146,9 @@ _TeamCity*
 # DotCover is a Code Coverage Tool
 *.dotCover
 
+**/bin/
+**/obj/
+
 # AxoCover is a Code Coverage Tool
 .axoCover/*
 !.axoCover/settings.json
