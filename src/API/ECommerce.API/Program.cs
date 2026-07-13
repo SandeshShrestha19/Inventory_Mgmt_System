@@ -10,9 +10,6 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddAuthenticationDependencies(builder.Configuration);
 builder.Services.AddAuthorizationDependencies();
 builder.Services.AddInfrastrutureDependencies();
