@@ -1,6 +1,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
-WORKDIR /app  # ← fixed
-EXPOSE 5161
+
+WORKDIR /src
+EXPOSE 8080
+
 ENV DOTNET_ENVIRONMENT=Production
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
@@ -31,6 +33,12 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "ECommerce.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 
 FROM base AS final
+
+RUN apt-get update && \
+  apt-get install -y libgssapi-krb5-2 && \
+  rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 COPY --from=publish /app/publish .
+
 ENTRYPOINT ["dotnet", "ECommerce.API.dll"]
