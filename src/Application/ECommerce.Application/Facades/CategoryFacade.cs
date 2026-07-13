@@ -19,7 +19,7 @@ public class CategoryFacade : ICategoryFacade
     _categoryRepository = categoryRepository;
   }
 
-  public async Task<Category> AddAsync(AddCategoryModel model)
+  public async Task<Category> AddAsync(AddCategoryModel model, CancellationToken cancellationToken = default)
   {
     try
     {
@@ -34,7 +34,7 @@ public class CategoryFacade : ICategoryFacade
         Name = model.Name,
       };
 
-      return await _categoryRepository.AddAsync(category);
+      return await _categoryRepository.AddAsync(category, cancellationToken);
 
     }
     catch (Exception ex)
@@ -45,11 +45,11 @@ public class CategoryFacade : ICategoryFacade
 
   }
 
-  public async Task<bool> DeleteAsync(Guid id)
+  public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
   {
     try
     {
-      await _categoryRepository.DeleteAsync(id);
+      await _categoryRepository.DeleteAsync(id, cancellationToken);
       return true;
     }
     catch (Exception ex)
@@ -79,11 +79,11 @@ public class CategoryFacade : ICategoryFacade
     });
   }
 
-  public async Task<CategoryResponseModel> GetByIdAsync(Guid id)
+  public async Task<CategoryResponseModel> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
   {
     try
     {
-      var category = await _categoryRepository.GetByIdAsync(id) ?? throw NotFoundException.Category();
+      var category = await _categoryRepository.GetByIdAsync(id, cancellationToken) ?? throw NotFoundException.Category();
       return ResponseMapper.ToCategoryResponse(category);
     }
     catch (Exception ex)
@@ -93,11 +93,11 @@ public class CategoryFacade : ICategoryFacade
     }
   }
 
-  public async Task UpdateAsync(Guid id, UpdateCategoryModel updateModel)
+  public async Task UpdateAsync(Guid id, UpdateCategoryModel updateModel, CancellationToken cancellationToken = default)
   {
     try
     {
-      var category = await _categoryRepository.GetByIdAsync(id)
+      var category = await _categoryRepository.GetByIdAsync(id, cancellationToken)
           ?? throw NotFoundException.Category();
 
       if (!string.IsNullOrWhiteSpace(updateModel.Name))
@@ -107,13 +107,14 @@ public class CategoryFacade : ICategoryFacade
 
       category.ModifiedAt = DateTimeOffset.UtcNow;
 
-      await _categoryRepository.UpdateAsync(category);
+      await _categoryRepository.UpdateAsync(category, cancellationToken);
 
       if (updateModel.ProductIds is not null)
       {
         await _productRepository.AssignProductsToCategoryAsync(
             updateModel.ProductIds,
-            category.Id);
+            category.Id,
+            cancellationToken);
       }
     }
     catch (Exception ex)

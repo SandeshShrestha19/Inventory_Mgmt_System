@@ -15,18 +15,23 @@ public class Mutation
     [Authorize(Roles = ["Admin"])]
     public async Task<Product> AddProduct(
         [Service] IProductFacade productFacade,
-        ProductInput productInput) =>
+        ProductInput productInput,
+        CancellationToken cancellationToken) =>
         await productFacade.AddAsync(new AddProductModel
         {
             Name = productInput.Name,
             Description = productInput.Description,
             Price = productInput.Price,
             Stock = productInput.Stock,
-            CategoryId = productInput.CategoryId
-        });
+            CategoryId = productInput.CategoryId,
+            ProductImages = productInput.ProductImages.Select(pi => new ProductImageModel
+            {
+                ImageUrl = pi.ImageUrl
+            }).ToList()
+        }, cancellationToken);
 
     [Authorize(Roles = ["Admin"])]
-    public async Task<bool> UpdateProduct([Service] IProductFacade productFacade, Guid id, UpdateProductInput udpateProductInput)
+    public async Task<bool> UpdateProduct([Service] IProductFacade productFacade, Guid id, UpdateProductInput udpateProductInput, CancellationToken cancellationToken)
     {
         await productFacade.UpdateAsync(id, new UpdateProductModel
         {
@@ -34,65 +39,76 @@ public class Mutation
             Description = udpateProductInput.Description,
             Price = udpateProductInput.Price,
             Stock = udpateProductInput.Stock,
-            CategoryId = udpateProductInput.CategoryId
-        });
+            CategoryId = udpateProductInput.CategoryId,
+            ProductImages = udpateProductInput.ProductImages?.Select(pi => new ProductImageModel
+            {
+                ImageUrl = pi.ImageUrl
+            }).ToList()
+        }, cancellationToken);
         return true;
     }
 
     [Authorize(Roles = ["Admin"])]
     public async Task<bool> DeleteProduct(
     [Service] IProductFacade productFacade,
-    Guid id) =>
-    await productFacade.DeleteAsync(id);
+    Guid id,
+    CancellationToken cancellationToken) =>
+    await productFacade.DeleteAsync(id, cancellationToken);
 
     [Authorize(Roles = ["Admin"])]
-    public async Task<bool> IncreaseProductStock([Service] IProductFacade productFacade, Guid id, int increasingQuantity)
+    public async Task<bool> IncreaseProductStock([Service] IProductFacade productFacade, Guid id, int increasingQuantity, CancellationToken cancellationToken)
     {
-        await productFacade.IncreaseStockAsync(id, increasingQuantity);
+        await productFacade.IncreaseStockAsync(id, increasingQuantity, cancellationToken);
         return true;
     }
 
     [Authorize(Roles = ["Admin"])]
-    public async Task<bool> DecreaseProductStock([Service] IProductFacade productFacade, Guid id, int decreasingQuantity)
+    public async Task<bool> DecreaseProductStock([Service] IProductFacade productFacade, Guid id, int decreasingQuantity, CancellationToken cancellationToken)
     {
-        await productFacade.DecreaseStockAsync(id, decreasingQuantity);
+        await productFacade.DecreaseStockAsync(id, decreasingQuantity, cancellationToken);
         return true;
     }
 
-    public async Task<User> RegisterUser([Service] IUserFacade userFacade, UserInput userInput)
+    public async Task<User> RegisterUser([Service] IUserFacade userFacade, UserInput userInput, CancellationToken cancellationToken)
     {
         return await userFacade.AddAsync(new AddUserModel
         {
             Name = userInput.Name,
             Email = userInput.Email,
-            Password = userInput.Password
-        });
+            Password = userInput.Password,
+            Username = userInput.Username,
+            CompanyName = userInput.CompanyName,
+            PhoneNumber = userInput.PhoneNumber
+        }, cancellationToken);
     }
 
 
     [Authorize]
-    public async Task<bool> DeleteUser([Service] IUserFacade userFacade, Guid id)
+    public async Task<bool> DeleteUser([Service] IUserFacade userFacade, Guid id, CancellationToken cancellationToken)
     {
-        return await userFacade.DeleteAsync(id);
+        return await userFacade.DeleteAsync(id, cancellationToken);
     }
 
     [Authorize]
-    public async Task<bool> UpdateUser([Service] IUserFacade userFacade, Guid id, UpdateUserInput updateUserInput)
+    public async Task<bool> UpdateUser([Service] IUserFacade userFacade, Guid id, UpdateUserInput updateUserInput, CancellationToken cancellationToken)
     {
         await userFacade.UpdateAsync(id, new UpdateUserModel
         {
             Name = updateUserInput.Name,
             Email = updateUserInput.Email,
-            Role = updateUserInput.Role,
-            Password = updateUserInput.Password
-        });
+            Password = updateUserInput.Password,
+            CompanyName = updateUserInput.CompanyName,
+            PhoneNumber = updateUserInput.PhoneNumber,
+            Username = updateUserInput.Username
+        }, cancellationToken);
         return true;
     }
 
     [Authorize(Policy = "ActiveUser")]
     public async Task<Order> PlaceOrder(
     [Service] IOrderFacade orderFacade,
-    OrderInput orderInput)
+    OrderInput orderInput,
+    CancellationToken cancellationToken)
     {
         return await orderFacade.AddAsync(new PlaceOrderModel
         {
@@ -102,13 +118,13 @@ public class Mutation
                 ProductId = item.ProductId,
                 Quantity = item.Quantity
             }).ToList()
-        });
+        }, cancellationToken);
     }
 
     [Authorize(Policy = "ActiveUser")]
-    public async Task<bool> DeleteOrder([Service] IOrderFacade orderFacade, Guid id)
+    public async Task<bool> DeleteOrder([Service] IOrderFacade orderFacade, Guid id, CancellationToken cancellationToken)
     {
-        return await orderFacade.DeleteAsync(id);
+        return await orderFacade.DeleteAsync(id, cancellationToken);
     }
 
     [Authorize(Policy = "ActiveUser")]
@@ -116,7 +132,8 @@ public class Mutation
     public async Task<bool> UpdateOrder(
     [Service] IOrderFacade orderFacade,
     Guid id,
-    UpdateOrderInput updateOrderInput)
+    UpdateOrderInput updateOrderInput,
+    CancellationToken cancellationToken)
     {
         await orderFacade.UpdateAsync(id, new UpdateOrderModel
         {
@@ -125,51 +142,95 @@ public class Mutation
                 ProductId = item.ProductId,
                 Quantity = item.Quantity
             }).ToList()
-        });
+        }, cancellationToken);
         return true;
     }
 
     [AllowAnonymous]
-    public async Task<LoginResponseModel> Login(
-    [Service] ILoginUseCase loginUseCase,
-    [Service] IHttpContextAccessor httpContextAccessor,
-    string email,
-    string password)
+    public async Task<LoginResponseModel> Login([Service] ILoginUseCase loginUseCase, [Service] IHttpContextAccessor httpContextAccessor, string emailOrUsername,
+    string password, CancellationToken cancellationToken)
     {
-        var result = await loginUseCase.ExecuteAsync(new LoginModel
-        {
-            Email = email,
-            Password = password
-        });
+        var result = await loginUseCase.ExecuteAsync(
+            new LoginModel
+            {
+                EmailOrUsername = emailOrUsername,
+                Password = password
+            },
+            cancellationToken);
 
-        if (!result.RequiresTwoFactor)
+        var response = httpContextAccessor
+            .HttpContext!
+            .Response;
+
+        if (result.RequiresTwoFactor)
         {
-            httpContextAccessor.HttpContext!.Response.Cookies.Append(
-                "token", result.AccessToken!, new CookieOptions
+            if (string.IsNullOrWhiteSpace(result.TempToken))
+            {
+                throw new InvalidOperationException(
+                    "Temporary 2FA token was not generated."
+                );
+            }
+
+            response.Cookies.Append(
+                "temp2faToken",
+                result.TempToken,
+                new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = false,
+                    Secure = false, // true in production
                     SameSite = SameSiteMode.Strict,
-                    Expires = DateTimeOffset.UtcNow.AddMinutes(7)
-                });
-
-            httpContextAccessor.HttpContext!.Response.Cookies.Append(
-                "refreshToken", result.RefreshToken!, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = false,
-                    SameSite = SameSiteMode.Strict,
-                    Expires = DateTimeOffset.UtcNow.AddDays(7)
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(5),
+                    Path = "/"
                 });
         }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(result.AccessToken))
+            {
+                throw new InvalidOperationException(
+                    "Access token was not generated."
+                );
+            }
 
+            if (string.IsNullOrWhiteSpace(result.RefreshToken))
+            {
+                throw new InvalidOperationException(
+                    "Refresh token was not generated."
+                );
+            }
+
+            response.Cookies.Append(
+                "token",
+                result.AccessToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = false, // true in production
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(7),
+                    Path = "/"
+                });
+
+            response.Cookies.Append(
+                "refreshToken",
+                result.RefreshToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = false, // true in production
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTimeOffset.UtcNow.AddDays(7),
+                    Path = "/"
+                });
+        }
         return result;
     }
 
     //clears the cookie
     [Authorize]
     public async Task<bool> Logout([Service] ILogoutUseCase logoutUseCase,
-    [Service] IHttpContextAccessor httpContextAccessor)
+    [Service] IHttpContextAccessor httpContextAccessor,
+    CancellationToken cancellationToken)
     {
         var userId = httpContextAccessor.HttpContext!.User
         .FindFirst(ClaimTypes.NameIdentifier)?.Value; //get userId from token
@@ -183,7 +244,7 @@ public class Mutation
 
         var refreshToken = httpContextAccessor.HttpContext!.Request.Cookies["refreshToken"] ?? throw new Exception("Refresh token not found!"); //request for refresh token from cookie
 
-        await logoutUseCase.ExecuteAsync(Guid.Parse(userId!), refreshToken, jti!, tokenExpiry);
+        await logoutUseCase.ExecuteAsync(Guid.Parse(userId!), refreshToken, jti!, tokenExpiry, cancellationToken);
 
         httpContextAccessor.HttpContext.Response.Cookies.Delete("token");
         httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
@@ -195,6 +256,7 @@ public class Mutation
     public async Task<string> RefreshToken(
     [Service] IRefreshTokenUseCase refreshTokenUseCase,
     [Service] IHttpContextAccessor httpContextAccessor,
+    CancellationToken cancellationToken,
     string? refToken = null)
     {
         var httpContext = httpContextAccessor.HttpContext
@@ -204,7 +266,7 @@ public class Mutation
             ?? refToken
             ?? throw new Exception("Refresh token not found!");
 
-        var newAccessToken = await refreshTokenUseCase.ExecuteAsync(refreshToken);
+        var newAccessToken = await refreshTokenUseCase.ExecuteAsync(refreshToken, cancellationToken);
 
         httpContext.Response.Cookies.Append(
             "token",
@@ -221,9 +283,9 @@ public class Mutation
     }
 
     [Authorize(Roles = ["Admin"])]
-    public async Task<bool> SetUserActiveStatus([Service] ISetUserActiveStatusUseCase setUserActiveStatusUseCase, Guid userId, bool isActive)
+    public async Task<bool> SetUserActiveStatus([Service] ISetUserActiveStatusUseCase setUserActiveStatusUseCase, Guid userId, bool isActive, CancellationToken cancellationToken)
     {
-        await setUserActiveStatusUseCase.ExecuteAsync(userId, isActive);
+        await setUserActiveStatusUseCase.ExecuteAsync(userId, isActive, cancellationToken);
         return true;
     }
 
@@ -231,13 +293,14 @@ public class Mutation
     [Authorize]
     public async Task<Enable2FAResponseModel> Setup2FA(
         [Service] IEnable2FAUseCase enable2FAUseCase,
-        [Service] IHttpContextAccessor httpContextAccessor)
+        [Service] IHttpContextAccessor httpContextAccessor,
+        CancellationToken cancellationToken)
     {
         var userId = httpContextAccessor.HttpContext!.User
             .FindFirst(ClaimTypes.NameIdentifier)?.Value
             ?? throw new Exception("User not found!");
 
-        return await enable2FAUseCase.ExecuteAsync(Guid.Parse(userId));
+        return await enable2FAUseCase.ExecuteAsync(Guid.Parse(userId), cancellationToken);
     }
 
     // Verify and enable 2FA
@@ -245,13 +308,14 @@ public class Mutation
     public async Task<bool> Verify2FA(
         [Service] IVerify2FAUseCase verify2FAUseCase,
         [Service] IHttpContextAccessor httpContextAccessor,
-        string code)
+        string code,
+        CancellationToken cancellationToken)
     {
         var userId = httpContextAccessor.HttpContext!.User
             .FindFirst(ClaimTypes.NameIdentifier)?.Value
             ?? throw new Exception("User not found!");
 
-        return await verify2FAUseCase.ExecuteAsync(Guid.Parse(userId), code);
+        return await verify2FAUseCase.ExecuteAsync(Guid.Parse(userId), code, cancellationToken);
     }
 
     [AllowAnonymous]
@@ -259,9 +323,10 @@ public class Mutation
         [Service] ILoginWith2FAUseCase loginWith2FAUseCase,
         [Service] IHttpContextAccessor httpContextAccessor,
         string tempToken,
-        string code)
+        string code,
+        CancellationToken cancellationToken)
     {
-        var result = await loginWith2FAUseCase.ExecuteAsync(tempToken, code);
+        var result = await loginWith2FAUseCase.ExecuteAsync(tempToken, code, cancellationToken);
 
         httpContextAccessor.HttpContext!.Response.Cookies.Append(
             "token", result.AccessToken!, new CookieOptions
@@ -289,46 +354,95 @@ public class Mutation
     public async Task<bool> Disable2FA(
         [Service] IUserRepository userRepository,
         [Service] IHttpContextAccessor httpContextAccessor,
-        [Service] IUnitOfWork unitOfWork)
+        [Service] IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
     {
         var userId = httpContextAccessor.HttpContext!.User
             .FindFirst(ClaimTypes.NameIdentifier)?.Value
             ?? throw new Exception("User not found!");
 
-        var user = await userRepository.GetByIdAsync(Guid.Parse(userId))
+        var user = await userRepository.GetByIdAsync(Guid.Parse(userId), cancellationToken)
             ?? throw new Exception("User not found!");
 
         user.TwoFactorEnabled = false;
         user.TwoFactorSecret = null;
-        await userRepository.UpdateAsync(user);
-        await unitOfWork.SaveChangesAsync();
+        await userRepository.UpdateAsync(user, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return true;
     }
 
-    public async Task<Category> AddCategory([Service] ICategoryFacade categoryFacade, CategoryInput categoryInput)
+    public async Task<Category> AddCategory([Service] ICategoryFacade categoryFacade, CategoryInput categoryInput, CancellationToken cancellationToken)
     {
         return await categoryFacade.AddAsync(new AddCategoryModel
         {
             Name = categoryInput.Name
-        });
+        }, cancellationToken);
     }
 
 
     [Authorize]
-    public async Task<bool> DeleteCategory([Service] ICategoryFacade categoryFacade, Guid id)
+    public async Task<bool> DeleteCategory([Service] ICategoryFacade categoryFacade, Guid id, CancellationToken cancellationToken)
     {
-        return await categoryFacade.DeleteAsync(id);
+        return await categoryFacade.DeleteAsync(id, cancellationToken);
     }
 
     [Authorize]
-    public async Task<bool> UpdateCategory([Service] ICategoryFacade categoryFacade, Guid id, UpdateCategoryInput updateCategoryInput)
+    public async Task<bool> UpdateCategory([Service] ICategoryFacade categoryFacade, Guid id, UpdateCategoryInput updateCategoryInput, CancellationToken cancellationToken)
     {
         await categoryFacade.UpdateAsync(id, new UpdateCategoryModel
         {
             Name = updateCategoryInput.Name,
             ProductIds = updateCategoryInput.ProductIds
-        });
+        }, cancellationToken);
         return true;
+    }
+
+    [Authorize(Roles = ["Admin"])]
+    public async Task<string> GenerateProductDescription(
+    [Service] IGeminiFacade geminiFacade,
+    string productName,
+    string categoryName,
+    CancellationToken cancellationToken)
+    {
+        var prompt = $"""
+        Generate a concise e-commerce product description.
+
+        Product: {productName}
+        Category: {categoryName}
+
+        Requirements:
+        - 2 to 3 sentences
+        - Professional tone
+        - No exaggerated claims
+        """;
+
+        return await geminiFacade.GenerateTextAsync(prompt, cancellationToken);
+    }
+
+    [AllowAnonymous]
+    public async Task<LoginResponseModel> GoogleLogin([Service] IGoogleAuthUseCase googleAuthUseCase, [Service] IHttpContextAccessor httpContextAccessor, string idToken)
+    {
+        var result = await googleAuthUseCase.ExecuteAsync(idToken);
+
+        httpContextAccessor.HttpContext!.Response.Cookies.Append(
+            "token", result.AccessToken!, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(7)
+            });
+
+        httpContextAccessor.HttpContext!.Response.Cookies.Append(
+            "refreshToken", result.RefreshToken!, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+        return result;
     }
 }

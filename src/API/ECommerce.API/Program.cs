@@ -5,6 +5,8 @@ using System.IdentityModel.Tokens.Jwt;
 using ECommerce.Domain.Ports;
 using OtpNet;
 using QRCoder;
+using ECommerce.Domain.Models;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,19 @@ builder.Services.AddScoped<ResponseMapper>();
 builder.Services.AddGraphQLDependencies();
 builder.Services.AddCorsDependencies(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<GeminiOptionsModel>(
+    builder.Configuration.GetSection("Gemini"));
+builder.WebHost.UseUrls("http://0.0.0.0:8080");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        npgsqlOptions =>
+        {
+            npgsqlOptions.EnableRetryOnFailure();
+        });
+});
 
 var app = builder.Build();
 
@@ -42,7 +57,13 @@ app.MapGet("otp/qrcode", () =>
     return Results.File(qrCodeImage, "image/png");
 });
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider
+        .GetRequiredService<AppDbContext>();
 
+    db.Database.Migrate();
+}
 app.UseAuthentication();
 app.UseAuthorization();
 app.Use(async (context, next) =>
@@ -96,10 +117,8 @@ app.MapPost("otp/validate", (ValidateOtpRequest request) =>
     var totp = new Totp(secretKey);
     var isValid = totp.VerifyTotp(request.Code, out var timeStepMatched, VerificationWindow.RfcSpecifiedNetworkDelay);
 
-    return Results.Ok(new {isValid});
+    return Results.Ok(new { isValid });
 });
-    
-
 
 app.Run();
 

@@ -15,9 +15,9 @@ public class Verify2FAUseCase : IVerify2FAUseCase
     _twoFactorService = twoFactorService;
   }
 
-  public async Task<bool> ExecuteAsync(Guid userId, string code)
+  public async Task<bool> ExecuteAsync(Guid userId, string code, CancellationToken cancellationToken = default)
   {
-    var user = await _userRepository.GetByIdAsync(userId) ?? throw new Exception("User not found!");
+    var user = await _userRepository.GetByIdAsync(userId, cancellationToken) ?? throw new Exception("User not found!");
 
     if (string.IsNullOrEmpty(user.TwoFactorSecret))
     {
@@ -29,8 +29,8 @@ public class Verify2FAUseCase : IVerify2FAUseCase
       throw new Exception("Invalid 2FA code!");
     }
     user.TwoFactorEnabled = true;
-    await _userRepository.UpdateAsync(user);
-    await _unitOfWork.SaveChangesAsync();
+    await _userRepository.UpdateAsync(user, cancellationToken);
+    await _unitOfWork.SaveChangesAsync(cancellationToken);
     return true;
   }
 }

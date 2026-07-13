@@ -4,5 +4,6 @@ public record UpdateProductInput
    string? Description,
    int Stock,
    decimal? Price,
-   Guid CategoryId
+   Guid CategoryId,
+   List<ProductImageModel>? ProductImages
 );
