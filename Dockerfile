@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 
-WORKDIR /src
+WORKDIR /app
 EXPOSE 8080
 
 ENV DOTNET_ENVIRONMENT=Production
