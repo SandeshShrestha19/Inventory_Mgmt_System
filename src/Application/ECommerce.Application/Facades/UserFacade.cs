@@ -36,7 +36,7 @@ public class UserFacade : IUserFacade
         throw new ValidationException("Email should contain '@'!");
       }
 
-      if (!model.Password.Contains("@") || !model.Password.Contains("#") || !model.Password.Contains("$") || !model.Password.Contains("!"))
+      if (!model.Password.Any(ch => "!@#$%^&*()_+-=[]{}|;:',.<>?/`~".Contains(ch)))
       {
         throw new ValidationException("Password should contain at least one special character!");
       }
@@ -124,31 +124,59 @@ public class UserFacade : IUserFacade
 
       if (!string.IsNullOrWhiteSpace(model.Name))
       {
-        user.Name = model.Name;
+        user.Name = model.Name.Trim();
       }
 
       if (!string.IsNullOrWhiteSpace(model.Email))
       {
-        user.Email = model.Email;
+        try
+        {
+          _ = new System.Net.Mail.MailAddress(model.Email);
+        }
+        catch
+        {
+          throw new ValidationException("Invalid email address!");
+        }
+
+        var existingUser = await _userRepository.GetByEmailAsync(
+            model.Email.Trim().ToLowerInvariant(),
+            cancellationToken);
+
+        if (existingUser != null && existingUser.Id != id)
+        {
+          throw ConflictException.EmailAlreadyExists();
+        }
+
+        user.Email = model.Email.Trim().ToLowerInvariant();
       }
 
       if (!string.IsNullOrWhiteSpace(model.Username))
       {
-        user.Username = model.Username;
+        user.Username = model.Username.Trim();
       }
 
       if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
       {
-        user.PhoneNumber = model.PhoneNumber;
+        user.PhoneNumber = model.PhoneNumber.Trim();
       }
 
       if (!string.IsNullOrWhiteSpace(model.CompanyName))
       {
-        user.CompanyName = model.CompanyName;
+        user.CompanyName = model.CompanyName.Trim();
       }
 
       if (!string.IsNullOrWhiteSpace(model.Password))
       {
+        if (model.Password.Length < 8)
+        {
+          throw new ValidationException("Password should be at least 8 characters long!");
+        }
+
+        if (!model.Password.Any(ch => "!@#$%^&*()_+-=[]{}|;:',.<>?/`~".Contains(ch)))
+        {
+          throw new ValidationException("Password should contain at least one special character!");
+        }
+
         user.Password = PasswordHashHandler.HashPassword(model.Password);
       }
 
