@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app  # ← fixed
-EXPOSE 5161
+EXPOSE 8080
 ENV DOTNET_ENVIRONMENT=Production
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
