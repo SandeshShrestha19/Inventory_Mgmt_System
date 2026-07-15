@@ -151,6 +151,7 @@ public class UserFacade : IUserFacade
       }
 
       if (!string.IsNullOrWhiteSpace(model.Username))
+
       {
         user.Username = model.Username.Trim();
       }

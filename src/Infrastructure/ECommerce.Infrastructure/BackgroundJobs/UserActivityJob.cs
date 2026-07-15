@@ -39,7 +39,9 @@ public class UserActivityJob : BackgroundService
     using var scope = _serviceScopeFactory.CreateScope(); //create scope to db
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>(); //access dbContext
 
-    var inactiveTokens = await context.RefreshTokens.Where(x => x.IsRevoked == true || x.ExpiresIn < DateTime.UtcNow).ToListAsync(cancellationToken);
+    var inactiveTokens = await context.RefreshTokens.Where(x => x.IsRevoked == true || x.ExpiresIn<DateTime.UtcNow).ToListAsync(cancellationToken);
+    
+    var inactiveUserIds = inactiveTokens.Select(x => x.Id).Distinct().ToList();
 
     var inactiveUserIds = inactiveTokens.Select(x => x.UserId).Distinct().ToList();
 
@@ -50,7 +52,7 @@ public class UserActivityJob : BackgroundService
       if (!hasActiveToken)
       {
         var user = await context.Users.FindAsync(new object[] { userId }, cancellationToken);
-        if (user != null && user.IsLoggedIn)
+        if(user != null && user.IsLoggedIn)
         {
           user.IsLoggedIn = false;
           _logger.LogInformation($"User {user.Email} set to inactive!");
