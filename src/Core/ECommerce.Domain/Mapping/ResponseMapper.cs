@@ -38,7 +38,8 @@ public class ResponseMapper
       Id = order.Id,
       TotalPrice = order.TotalPrice,
       OrderItems = order.OrderItems,
-      OrderDate = order.OrderDate
+      OrderDate = order.OrderDate,
+      OrderStatus = order.OrderStatus
     };
   }
 

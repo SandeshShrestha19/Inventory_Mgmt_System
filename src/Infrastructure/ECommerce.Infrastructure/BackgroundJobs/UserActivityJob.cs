@@ -15,7 +15,7 @@ public class UserActivityJob : BackgroundService
     _logger = logger;
   }
 
-  protected override async Task ExecuteAsync(CancellationToken stoppingToken) //stoppingToken stops job when app shuts down
+  protected override async Task ExecuteAsync(CancellationToken stoppingToken)
   {
     _logger.LogInformation("UserActivityJob started!");
 
@@ -43,7 +43,9 @@ public class UserActivityJob : BackgroundService
     
     var inactiveUserIds = inactiveTokens.Select(x => x.Id).Distinct().ToList();
 
-    foreach(var userId in inactiveUserIds)
+    var inactiveUserIds = inactiveTokens.Select(x => x.UserId).Distinct().ToList();
+
+    foreach (var userId in inactiveUserIds)
     {
       var hasActiveToken = await context.RefreshTokens.AnyAsync(x => x.UserId == userId && x.IsRevoked == false && x.ExpiresIn > DateTime.UtcNow, cancellationToken);
 

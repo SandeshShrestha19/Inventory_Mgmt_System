@@ -14,7 +14,7 @@ public static class DependencyInjection
     services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
     services.AddScoped<IBlacklistedTokenRepository, BlacklistedTokenRepository>();
     services.AddScoped<ICategoryRepository, CategoryRepository>();
-    services.AddScoped<UserActivityJob>();
+    services.AddHostedService<UserActivityJob>();
     return services;
   }
 }
