@@ -6,6 +6,7 @@ using HotChocolate.Authorization;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using ECommerce.Domain.UseCase;
+using ECommerce.Domain.Constants;
 
 namespace ECommerce.API.GraphQL.Mutations;
 
@@ -113,6 +114,7 @@ public class Mutation
         return await orderFacade.AddAsync(new PlaceOrderModel
         {
             UserId = orderInput.UserId,
+            OrderStatus = OrderStatus.Pending,
             Items = orderInput.Items.Select(item => new OrderItemModel
             {
                 ProductId = item.ProductId,
@@ -137,6 +139,7 @@ public class Mutation
     {
         await orderFacade.UpdateAsync(id, new UpdateOrderModel
         {
+            OrderStatus = updateOrderInput.OrderStatus,
             Items = updateOrderInput.Items.Select(item => new UpdateOrderItemModel
             {
                 ProductId = item.ProductId,

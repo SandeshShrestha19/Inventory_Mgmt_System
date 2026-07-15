@@ -1,4 +1,5 @@
 using Ecommerce.Domain.Models;
+using ECommerce.Domain.Constants;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Exceptions;
 using ECommerce.Domain.Ports;
@@ -57,7 +58,8 @@ public class OrderFacade : IOrderFacade
         Id = Guid.CreateVersion7(),
         UserId = model.UserId,
         OrderItems = orderItems,
-        TotalPrice = totalPrice
+        TotalPrice = totalPrice,
+        OrderStatus = OrderStatus.Pending
       };
 
       await _orderRepository.AddAsync(order, cancellationToken);
@@ -143,6 +145,7 @@ public class OrderFacade : IOrderFacade
         }
       }
       order.TotalPrice = order.OrderItems.Sum(oi => oi.UnitPrice * oi.Quantity);
+      order.OrderStatus = model.OrderStatus ?? OrderStatus.Pending;
 
       await _orderRepository.UpdateAsync(order, cancellationToken);
     }
@@ -167,7 +170,8 @@ public class OrderFacade : IOrderFacade
       Id = x.Id,
       OrderItems = x.OrderItems,
       TotalPrice = x.TotalPrice,
-      OrderDate = x.OrderDate
+      OrderDate = x.OrderDate,
+      OrderStatus = x.OrderStatus
     });
   }
 

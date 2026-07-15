@@ -52,6 +52,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(o => o.Id);
+            entity.Property(o => o.OrderStatus)
+                  .HasConversion<string>();
             entity.HasOne(o => o.User)
                   .WithMany(u => u.Orders)
                   .HasForeignKey(o => o.UserId);
