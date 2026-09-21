@@ -3,7 +3,7 @@ public static class CorsExtension
   public static IServiceCollection AddCorsDependencies(this IServiceCollection services, IConfiguration configuration)
   {
     var allowedOrigins = configuration["AllowedOrigins"]
-        ?? "http://localhost:3000,http://localhost:5173";
+        ?? "http://localhost:3000,http://localhost:5173,https://fourth-sem-frontend.vercel.app/";
 
     services.AddCors(options =>
     {
