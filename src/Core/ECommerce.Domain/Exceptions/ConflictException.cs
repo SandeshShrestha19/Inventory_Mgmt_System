@@ -7,4 +7,12 @@ public class ConflictException : BaseException
   {
     return new("Email already exists!");
   }
+  public static ConflictException ProductNameAlreadyExists(string name)
+  {
+    return new($"A product with the name '{name}' already exists!");
+  }
+  public static ConflictException CategoryNameAlreadyExists(string name)
+  {
+    return new($"A category with the name '{name}' already exists!");
+  }
 }

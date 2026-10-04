@@ -48,4 +48,11 @@ public class CategoryRepository : ICategoryRepository
     }
     return true;
   }
+
+  public async Task<bool> ExistsWithNameAsync(string name, Guid? excludeId = null, CancellationToken cancellationToken = default)
+  {
+    return await _context.Categories
+      .Where(c => EF.Functions.ILike(c.Name, name) && (excludeId == null || c.Id != excludeId.Value))
+      .AnyAsync(cancellationToken);
+  }
 }

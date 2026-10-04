@@ -10,4 +10,5 @@ public interface IProductRepository
     Task UpdateAsync(Product product, CancellationToken cancellationToken = default);
     Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     Task AssignProductsToCategoryAsync(ICollection<Guid> productIds, Guid categoryId, CancellationToken cancellationToken = default);
+    Task<bool> ExistsWithNameAsync(string name, Guid? excludeId = null, CancellationToken cancellationToken = default);
 }

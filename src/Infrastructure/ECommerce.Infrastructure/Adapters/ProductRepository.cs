@@ -65,4 +65,11 @@ public class ProductRepository : IProductRepository
 
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<bool> ExistsWithNameAsync(string name, Guid? excludeId = null, CancellationToken cancellationToken = default)
+    {
+        return await _context.Products
+            .Where(p => EF.Functions.ILike(p.Name, name) && (excludeId == null || p.Id != excludeId.Value))
+            .AnyAsync(cancellationToken);
+    }
 }

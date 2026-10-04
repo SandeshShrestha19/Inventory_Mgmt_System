@@ -28,6 +28,11 @@ public class CategoryFacade : ICategoryFacade
         throw new ValidationException("Category name is required");
       }
 
+      if (await _categoryRepository.ExistsWithNameAsync(model.Name, cancellationToken: cancellationToken))
+      {
+        throw ConflictException.CategoryNameAlreadyExists(model.Name);
+      }
+
       var category = new Category
       {
         Id = Guid.CreateVersion7(),
@@ -101,6 +106,14 @@ public class CategoryFacade : ICategoryFacade
       {
         var category = await _categoryRepository.GetByIdAsync(id, cancellationToken)
             ?? throw NotFoundException.Category();
+
+        if (!string.IsNullOrWhiteSpace(updateModel.Name) && !updateModel.Name.Equals(category.Name, StringComparison.OrdinalIgnoreCase))
+        {
+          if (await _categoryRepository.ExistsWithNameAsync(updateModel.Name, excludeId: id, cancellationToken: cancellationToken))
+          {
+            throw ConflictException.CategoryNameAlreadyExists(updateModel.Name);
+          }
+        }
 
         if (!string.IsNullOrWhiteSpace(updateModel.Name))
         {

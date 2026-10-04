@@ -35,6 +35,11 @@ public class ProductFacade : IProductFacade
         throw new ValidationException("Product name is required");
       }
 
+      if (await _productRepository.ExistsWithNameAsync(model.Name, cancellationToken: cancellationToken))
+      {
+        throw ConflictException.ProductNameAlreadyExists(model.Name);
+      }
+
       if (model.Price <= 0)
       {
         throw new ValidationException("Price must be greater than 0");
@@ -139,6 +144,14 @@ public class ProductFacade : IProductFacade
     try
     {
       var product = await _productRepository.GetByIdAsync(id, cancellationToken) ?? throw NotFoundException.Product();
+
+      if (updateModel.Name != null && !updateModel.Name.Equals(product.Name, StringComparison.OrdinalIgnoreCase))
+      {
+        if (await _productRepository.ExistsWithNameAsync(updateModel.Name, excludeId: id, cancellationToken: cancellationToken))
+        {
+          throw ConflictException.ProductNameAlreadyExists(updateModel.Name);
+        }
+      }
 
       product.Name = updateModel.Name ?? product.Name;
       if (updateModel.Description != null)
