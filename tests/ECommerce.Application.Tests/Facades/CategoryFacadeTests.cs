@@ -55,6 +55,38 @@ public class CategoryFacadeTests
         _categoryRepositoryMock.Verify(r => r.AddAsync(It.IsAny<Category>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
+    [Theory]
+    [InlineData("Books")]
+    [InlineData("books")]
+    [InlineData("BOOKS")]
+    public async Task AddAsync_DuplicateNameDifferentCase_ThrowsConflictException(string duplicateName)
+    {
+        // Arrange
+        var model = new AddCategoryModel { Name = duplicateName };
+        _categoryRepositoryMock
+            .Setup(r => r.ExistsWithNameAsync(duplicateName, null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        var sut = CreateSut();
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<ConflictException>(() => sut.AddAsync(model));
+        Assert.Contains(duplicateName, ex.Message);
+        _categoryRepositoryMock.Verify(r => r.AddAsync(It.IsAny<Category>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task AddAsync_NameExceedsFiftyCharacters_ThrowsValidationException()
+    {
+        // DEMO FAILING TEST: Presentation requirement for category name length limit (<= 50 chars)
+        // Currently fails because maximum length validation is not yet enforced in CategoryFacade.
+        var longName = new string('A', 51);
+        var model = new AddCategoryModel { Name = longName };
+        var sut = CreateSut();
+
+        await Assert.ThrowsAsync<ValidationException>(() => sut.AddAsync(model));
+    }
+
     // ─── GetByIdAsync ─────────────────────────────────────────────────────────
 
     [Fact]
@@ -220,5 +252,60 @@ public class CategoryFacadeTests
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(() =>
             sut.UpdateAsync(Guid.NewGuid(), new UpdateCategoryModel { Name = "X" }));
+    }
+
+    [Theory]
+    [InlineData("Fiction")]
+    [InlineData("FICTION")]
+    [InlineData("fiction")]
+    public async Task UpdateAsync_NewNameAlreadyExistsCaseInsensitive_ThrowsConflictException(string newName)
+    {
+        // Arrange
+        var categoryId = Guid.NewGuid();
+        var existingCategory = new Category { Id = categoryId, Name = "Non-Fiction" };
+
+        _categoryRepositoryMock
+            .Setup(r => r.GetByIdAsync(categoryId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingCategory);
+
+        _categoryRepositoryMock
+            .Setup(r => r.ExistsWithNameAsync(newName, categoryId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        _unitOfWorkMock
+            .Setup(u => u.ExecuteInTransactionAsync(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
+            .Returns<Func<Task>, CancellationToken>(async (op, _) => await op());
+
+        var sut = CreateSut();
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<ConflictException>(() =>
+            sut.UpdateAsync(categoryId, new UpdateCategoryModel { Name = newName }));
+        Assert.Contains(newName, ex.Message);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_SameNameDifferentCase_AllowsUpdateWithoutConflict()
+    {
+        // Arrange
+        var categoryId = Guid.NewGuid();
+        var existingCategory = new Category { Id = categoryId, Name = "Books" };
+
+        _categoryRepositoryMock
+            .Setup(r => r.GetByIdAsync(categoryId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingCategory);
+
+        _unitOfWorkMock
+            .Setup(u => u.ExecuteInTransactionAsync(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
+            .Returns<Func<Task>, CancellationToken>(async (op, _) => await op());
+
+        var sut = CreateSut();
+
+        // Act
+        await sut.UpdateAsync(categoryId, new UpdateCategoryModel { Name = "BOOKS" });
+
+        // Assert - should NOT query ExistsWithNameAsync since it's the same name
+        _categoryRepositoryMock.Verify(r => r.ExistsWithNameAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<CancellationToken>()), Times.Never);
+        _categoryRepositoryMock.Verify(r => r.UpdateAsync(It.Is<Category>(c => c.Name == "BOOKS"), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

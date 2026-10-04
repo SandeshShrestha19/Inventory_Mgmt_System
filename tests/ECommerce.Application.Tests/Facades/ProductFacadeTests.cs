@@ -60,7 +60,7 @@ public class ProductFacadeTests
         var sut = CreateSut();
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<Exception>(() => sut.AddAsync(model));
+        var ex = await Assert.ThrowsAsync<ValidationException>(() => sut.AddAsync(model));
         Assert.Contains("Product name is required", ex.Message);
     }
 
@@ -74,7 +74,7 @@ public class ProductFacadeTests
         var sut = CreateSut();
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<Exception>(() => sut.AddAsync(model));
+        var ex = await Assert.ThrowsAsync<ValidationException>(() => sut.AddAsync(model));
         Assert.Contains("Price must be greater than 0", ex.Message);
     }
 
@@ -86,8 +86,41 @@ public class ProductFacadeTests
         var sut = CreateSut();
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<Exception>(() => sut.AddAsync(model));
+        var ex = await Assert.ThrowsAsync<ValidationException>(() => sut.AddAsync(model));
         Assert.Contains("Stock cannot be negative", ex.Message);
+    }
+
+    [Theory]
+    [InlineData("Laptop")]
+    [InlineData("laptop")]
+    [InlineData("LAPTOP")]
+    public async Task AddAsync_DuplicateNameDifferentCase_ThrowsConflictException(string duplicateName)
+    {
+        // Arrange
+        var model = new AddProductModel { Name = duplicateName, Price = 100m, Stock = 5 };
+        _productRepositoryMock
+            .Setup(r => r.ExistsWithNameAsync(duplicateName, null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        var sut = CreateSut();
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<ConflictException>(() => sut.AddAsync(model));
+        Assert.Contains($"A product with the name '{duplicateName}' already exists!", ex.Message);
+        _productRepositoryMock.Verify(r => r.AddAsync(It.IsAny<Product>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task AddAsync_NameExceedsHundredCharacters_ThrowsValidationException()
+    {
+        // DEMO FAILING TEST: Presentation requirement for product name length limit (<= 100 chars)
+        // Currently fails because maximum length validation for product names is not yet implemented.
+        var longName = new string('P', 101);
+        var model = new AddProductModel { Name = longName, Price = 50m, Stock = 10 };
+        var sut = CreateSut();
+
+        var ex = await Assert.ThrowsAsync<ValidationException>(() => sut.AddAsync(model));
+        Assert.Contains("Product name cannot exceed 100 characters", ex.Message);
     }
 
     [Fact]
@@ -377,6 +410,51 @@ public class ProductFacadeTests
 
         // Assert
         _geminiFacadeMock.Verify(g => g.GenerateTextAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Theory]
+    [InlineData("Gaming Laptop")]
+    [InlineData("GAMING LAPTOP")]
+    [InlineData("gaming laptop")]
+    public async Task UpdateAsync_NewNameAlreadyExistsCaseInsensitive_ThrowsConflictException(string newName)
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var product = new Product { Id = id, Name = "Basic Laptop", Price = 100m };
+        _productRepositoryMock
+            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(product);
+
+        _productRepositoryMock
+            .Setup(r => r.ExistsWithNameAsync(newName, id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        var sut = CreateSut();
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<ConflictException>(() =>
+            sut.UpdateAsync(id, new UpdateProductModel { Name = newName }));
+        Assert.Contains(newName, ex.Message);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_SameNameDifferentCase_AllowsUpdateWithoutConflict()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var product = new Product { Id = id, Name = "Laptop", Price = 100m };
+        _productRepositoryMock
+            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(product);
+
+        var sut = CreateSut();
+
+        // Act
+        await sut.UpdateAsync(id, new UpdateProductModel { Name = "LAPTOP" });
+
+        // Assert - should NOT query ExistsWithNameAsync since it's the same name
+        _productRepositoryMock.Verify(r => r.ExistsWithNameAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<CancellationToken>()), Times.Never);
+        _productRepositoryMock.Verify(r => r.UpdateAsync(It.Is<Product>(p => p.Name == "LAPTOP"), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     // ─── IncreaseStockAsync ───────────────────────────────────────────────────

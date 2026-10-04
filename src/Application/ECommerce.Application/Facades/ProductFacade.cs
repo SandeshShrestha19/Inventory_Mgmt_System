@@ -81,7 +81,7 @@ public class ProductFacade : IProductFacade
     catch (Exception ex)
     {
       _logger.LogError(ex, "Failed to add product");
-      throw new Exception($"Failed to add product: {ex.Message}");
+      throw;
     }
 
   }

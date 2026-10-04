@@ -20,6 +20,12 @@ public class AuthorizationErrorFilter : IErrorFilter
                         .WithCode(baseException.ErrorCode);
         }
 
+        if (error.Exception?.InnerException is BaseException innerBaseException)
+        {
+            return error.WithMessage(innerBaseException.Message)
+                        .WithCode(innerBaseException.ErrorCode);
+        }
+
         return error;
     }
 }
